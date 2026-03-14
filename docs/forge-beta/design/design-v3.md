@@ -1610,6 +1610,7 @@ This log tracks all deviations from expected Forge behavior observed during Beta
 |---|---------|-------|----------|--------|----------|------------|------------|--------|
 | 1 | v0.2.0-dev | `brainstorming` | Design doc written to `docs/<project>/design/design.md` | Skill hardcodes `docs/plans/<project>/design.md` — wrong directory structure | friction | Skill text uses incorrect path convention | v0.2.0 | open |
 | 2 | v0.2.0-dev | repo structure | Product artifacts at top level (like `agents/`, `skills/`, `hooks/`) | Product tools (`bin/`, `policies/`, `adapters/`, `workflows/`, `packs/`) nested inside `.forge/`, mixing product infra with per-project config | friction | Inherited from upstream; `.forge/` was treated as a catch-all | v0.2.0 | open |
+| 3 | v0.2.0-dev | `setting-up-project` | Elevated tier requires worktree creation | Skipped worktree — developing Beta directly on main with backup branch `forge-v0.1.1-baseline` instead. Worktree adds complexity without benefit when there are no external users. | cosmetic | Skill assumes all elevated work needs isolation; dogfooding on own repo is a special case | v0.3.0 | deferred |
 
 ---
 
