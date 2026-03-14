@@ -1,5 +1,18 @@
 # Forge Release Notes
 
+## v0.2.1 (2026-03-14)
+
+### Execution Fixes
+
+Patch release fixing 4 multi-agent execution issues discovered during v0.2.0 dogfooding.
+
+- **Composing-teams enforcement** — `setting-up-project` now blocks with a HARD-GATE until `forge:composing-teams` has run and the user approves the team roster. Prevents improvised team structure.
+- **Squash-on-merge** — `agent-team-driven-development` defaults to `git merge --squash` when merging worktree branches, producing one clean commit per task on main.
+- **Wave cleanup routine** — Named routine runs before each new wave: marks tasks complete, cleans sub-tasks, verifies no stale state, sends shutdown to unneeded agents.
+- **Status reporting** — Per-task and between-wave status summaries make multi-agent execution visible at a glance.
+
+---
+
 ## v0.2.0 (2026-03-14)
 
 ### Trust, Identity, and Documentation

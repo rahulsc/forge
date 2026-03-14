@@ -1,6 +1,6 @@
 {
   "name": "forge",
   "description": "Structured operating mode for AI-assisted development — risk-scaled ceremony, evidence-gated completion, multi-agent teams",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "contextFileName": "GEMINI.md"
 }
