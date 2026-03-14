@@ -92,7 +92,7 @@ or search for "forge" in the plugin marketplace.
 Tell Codex:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/superpowers/refs/heads/main/.codex/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/forge/refs/heads/main/.codex/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.codex.md](docs/README.codex.md)
@@ -102,7 +102,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/sup
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/superpowers/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/forge/refs/heads/main/.opencode/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
@@ -110,7 +110,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/sup
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/rahulsc/superpowers
+gemini extensions install https://github.com/rahulsc/forge
 ```
 
 To update:
@@ -221,7 +221,7 @@ multi-agent team workflows:
 
 Skills live directly in this repository. To contribute:
 
-1. Fork [rahulsc/superpowers](https://github.com/rahulsc/superpowers)
+1. Fork [rahulsc/forge](https://github.com/rahulsc/forge)
 2. Create a branch for your skill
 3. Follow the `writing-skills` skill for creating and testing new skills
 4. Submit a PR
@@ -248,4 +248,4 @@ attribution and [ORIGINS.md](ORIGINS.md) for the full story.
 
 ## Support
 
-- **Issues**: https://github.com/rahulsc/superpowers/issues
+- **Issues**: https://github.com/rahulsc/forge/issues

@@ -5,8 +5,8 @@
   "author": {
     "name": "Rahul Singh Chauhan"
   },
-  "homepage": "https://github.com/rahulsc/superpowers",
-  "repository": "https://github.com/rahulsc/superpowers",
+  "homepage": "https://github.com/rahulsc/forge",
+  "repository": "https://github.com/rahulsc/forge",
   "license": "MIT",
   "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"]
 }

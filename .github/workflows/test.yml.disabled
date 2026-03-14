@@ -1,4 +1,4 @@
-name: Superpowers Tests
+name: Forge Tests
 
 on:
   push:
@@ -52,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-logs-tier-${{ matrix.tier }}
-          path: /tmp/superpowers-tests/
+          path: /tmp/forge-tests/
           retention-days: 7

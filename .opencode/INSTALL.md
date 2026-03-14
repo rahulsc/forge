@@ -10,7 +10,7 @@
 ### 1. Clone Forge
 
 ```bash
-git clone https://github.com/rahulsc/superpowers.git ~/.config/opencode/forge
+git clone https://github.com/rahulsc/forge.git ~/.config/opencode/forge
 ```
 
 ### 2. Register the Plugin
@@ -115,5 +115,5 @@ When skills reference Claude Code tools:
 
 ## Getting Help
 
-- Report issues: https://github.com/rahulsc/superpowers/issues
-- Full documentation: https://github.com/rahulsc/superpowers/blob/main/docs/README.opencode.md
+- Report issues: https://github.com/rahulsc/forge/issues
+- Full documentation: https://github.com/rahulsc/forge/blob/main/docs/README.opencode.md

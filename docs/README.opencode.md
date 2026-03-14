@@ -7,7 +7,7 @@ Complete guide for using Forge with [OpenCode.ai](https://opencode.ai).
 Tell OpenCode:
 
 ```
-Clone https://github.com/rahulsc/superpowers to ~/.config/opencode/forge, then create directory ~/.config/opencode/plugins, then symlink ~/.config/opencode/forge/.opencode/plugins/forge.js to ~/.config/opencode/plugins/forge.js, then symlink ~/.config/opencode/forge/skills to ~/.config/opencode/skills/forge, then restart opencode.
+Clone https://github.com/rahulsc/forge to ~/.config/opencode/forge, then create directory ~/.config/opencode/plugins, then symlink ~/.config/opencode/forge/.opencode/plugins/forge.js to ~/.config/opencode/plugins/forge.js, then symlink ~/.config/opencode/forge/skills to ~/.config/opencode/skills/forge, then restart opencode.
 ```
 
 ## Manual Installation
@@ -24,7 +24,7 @@ Clone https://github.com/rahulsc/superpowers to ~/.config/opencode/forge, then c
 if [ -d ~/.config/opencode/forge ]; then
   cd ~/.config/opencode/forge && git pull
 else
-  git clone https://github.com/rahulsc/superpowers.git ~/.config/opencode/forge
+  git clone https://github.com/rahulsc/forge.git ~/.config/opencode/forge
 fi
 
 # 2. Create directories
@@ -66,7 +66,7 @@ Run as Administrator, or with Developer Mode enabled:
 
 ```cmd
 :: 1. Install Forge
-git clone https://github.com/rahulsc/superpowers.git "%USERPROFILE%\.config\opencode\forge"
+git clone https://github.com/rahulsc/forge.git "%USERPROFILE%\.config\opencode\forge"
 
 :: 2. Create directories
 mkdir "%USERPROFILE%\.config\opencode\plugins" 2>nul
@@ -91,7 +91,7 @@ Run as Administrator, or with Developer Mode enabled:
 
 ```powershell
 # 1. Install Forge
-git clone https://github.com/rahulsc/superpowers.git "$env:USERPROFILE\.config\opencode\forge"
+git clone https://github.com/rahulsc/forge.git "$env:USERPROFILE\.config\opencode\forge"
 
 # 2. Create directories
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\plugins"
@@ -116,7 +116,7 @@ Note: Git Bash's native `ln` command copies files instead of creating symlinks. 
 
 ```bash
 # 1. Install Forge
-git clone https://github.com/rahulsc/superpowers.git ~/.config/opencode/forge
+git clone https://github.com/rahulsc/forge.git ~/.config/opencode/forge
 
 # 2. Create directories
 mkdir -p ~/.config/opencode/plugins ~/.config/opencode/skills
@@ -308,8 +308,8 @@ If you see `Cannot find module` errors on Windows:
 
 ## Getting Help
 
-- Report issues: https://github.com/rahulsc/superpowers/issues
-- Main documentation: https://github.com/rahulsc/superpowers
+- Report issues: https://github.com/rahulsc/forge/issues
+- Main documentation: https://github.com/rahulsc/forge
 - OpenCode docs: https://opencode.ai/docs/
 
 ## Testing

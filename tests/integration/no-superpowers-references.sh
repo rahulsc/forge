@@ -12,7 +12,7 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-WORKTREE="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0"
+WORKTREE="${FORGE_ROOT:-$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "/home/rahulsc/Projects/forge")}"
 
 echo "=== no-superpowers-references: verify cleanup of superpowers references ==="
 echo ""

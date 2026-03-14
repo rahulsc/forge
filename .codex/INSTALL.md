@@ -10,7 +10,7 @@ Enable forge skills in Codex via native skill discovery. Just clone and symlink.
 
 1. **Clone the forge repository:**
    ```bash
-   git clone https://github.com/rahulsc/superpowers.git ~/.codex/forge
+   git clone https://github.com/rahulsc/forge.git ~/.codex/forge
    ```
 
 2. **Create the skills symlink:**
