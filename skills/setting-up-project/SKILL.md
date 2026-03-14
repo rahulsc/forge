@@ -124,12 +124,27 @@ To evaluate, scan the design doc for task decomposition. If unclear, count the t
 
 **If composing a team:** invoke `forge:composing-teams`. Do not design the roster yourself.
 
+`forge:composing-teams` must:
+1. Scan the `agents/` directory to discover available specialist agents
+2. Present the available agents to the user with recommended specialist-to-task mapping
+3. Recommend model tier per role (opus for architecture/complex, sonnet for implementation, haiku for mechanical)
+4. Propose team size based on the design's parallelism
+5. Get explicit user approval of the roster
+
+After the user approves, write the roster to state:
+```
+forge-state set team.roster "<approved roster JSON>" --project-dir .
+forge-state set team.decision team --project-dir .
+```
+
+<HARD-GATE>
+Do NOT proceed to `forge:writing-plans` until `forge:composing-teams` has run and `team.roster` is written to state. The lead must NEVER improvise team structure — the roster comes from composing-teams with user approval.
+</HARD-GATE>
+
 **If going solo:** skip composing-teams entirely.
 
-Write the team decision to state:
-
 ```
-forge-state set team.decision <solo|team> --project-dir .
+forge-state set team.decision solo --project-dir .
 ```
 
 
@@ -231,6 +246,7 @@ worktree:
     path: <path>          # written by forge:using-git-worktrees
 team:
   decision: <solo|team>
+  roster: <JSON>            # written by forge:composing-teams (team only)
 ```
 
 All state is stored in `.forge/local/` (gitignored).
