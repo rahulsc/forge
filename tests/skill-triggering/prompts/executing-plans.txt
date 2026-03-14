@@ -1,0 +1,1 @@
+I have a plan document at docs/auth-system/plans/plan.md that needs to be executed. Please implement it.

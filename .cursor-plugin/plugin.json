@@ -1,0 +1,17 @@
+{
+  "name": "forge",
+  "displayName": "Forge",
+  "description": "Core skills library: TDD, debugging, collaboration patterns, and proven techniques",
+  "version": "0.1.0",
+  "author": {
+    "name": "Rahul Singh Chauhan"
+  },
+  "homepage": "https://github.com/rahulsc/superpowers",
+  "repository": "https://github.com/rahulsc/superpowers",
+  "license": "MIT",
+  "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}

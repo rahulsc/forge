@@ -1,0 +1,210 @@
+#!/usr/bin/env bash
+# forge-task-completed — TaskCompleted hook for Forge
+# Checks that required evidence exists before allowing task completion.
+# Blocks with exit 2 when evidence is missing.
+#
+# Environment variables:
+#   FORGE_PROJECT_DIR — project root (defaults to cwd)
+#   FORGE_TASK_ID     — task identifier to look up evidence for
+#   FORGE_TASK_FILES  — space-separated list of files touched (for tier detection)
+
+set -euo pipefail
+
+PROJECT_DIR="${FORGE_PROJECT_DIR:-$(pwd)}"
+TASK_ID="${FORGE_TASK_ID:-}"
+TASK_FILES="${FORGE_TASK_FILES:-}"
+
+# Locate forge bins
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../.forge/bin" 2>/dev/null && pwd)" || FORGE_BIN=""
+if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-state" ]; then
+    export PATH="$FORGE_BIN:$PATH"
+fi
+
+# --- Graceful fallback if not a Forge project ---
+# Detect Forge by .forge/ directory (project.yaml is optional in some test setups)
+if [ ! -d "$PROJECT_DIR/.forge" ]; then
+    exit 0
+fi
+
+# --- Locate policy file ---
+POLICY_FILE="$PROJECT_DIR/.forge/policies/default.yaml"
+
+# --- Match files to tier/required artifacts ---
+# Returns "tier:artifact1,artifact2,..." for the highest-tier match
+_match_policy() {
+    local files="$1"
+    local policy="$2"
+
+    if [ ! -f "$policy" ]; then
+        # No policy — default to standard requiring verification
+        printf 'standard:verification'
+        return
+    fi
+
+    local best_tier="minimal"
+    local best_require="verification"
+
+    # Read rules block: parse lines like "  - match: glob" then "tier: X" then "require: [...]"
+    # Use python3 for reliable YAML parsing if available, else grep-based
+    if command -v python3 &>/dev/null; then
+        local result
+        result=$(python3 - "$policy" "$files" <<'PYEOF'
+import sys, re
+
+policy_file = sys.argv[1]
+files_str = sys.argv[2]
+files = files_str.split() if files_str else []
+
+with open(policy_file) as f:
+    content = f.read()
+
+import fnmatch
+
+# Parse rules: simple state-machine over lines
+rules = []
+current = {}
+in_rules = False
+for line in content.splitlines():
+    stripped = line.strip()
+    if stripped == 'rules:':
+        in_rules = True
+        continue
+    if not in_rules:
+        continue
+    if stripped.startswith('- match:'):
+        if current:
+            rules.append(current)
+        current = {'match': stripped.split('match:', 1)[1].strip().strip('"')}
+    elif stripped.startswith('tier:') and current:
+        current['tier'] = stripped.split('tier:', 1)[1].strip()
+    elif stripped.startswith('require:') and current:
+        req_str = stripped.split('require:', 1)[1].strip()
+        req_str = req_str.strip('[]')
+        current['require'] = [r.strip() for r in req_str.split(',') if r.strip()]
+if current:
+    rules.append(current)
+
+TIER_ORDER = {'minimal': 0, 'standard': 1, 'elevated': 2, 'critical': 3}
+
+best_tier = 'minimal'
+best_require = ['verification']
+
+for f in files:
+    for rule in rules:
+        pattern = rule.get('match', '')
+        # Convert glob pattern: ** matches anything
+        if fnmatch.fnmatch(f, pattern) or fnmatch.fnmatch(f, pattern.replace('**', '*')):
+            tier = rule.get('tier', 'minimal')
+            if TIER_ORDER.get(tier, 0) > TIER_ORDER.get(best_tier, 0):
+                best_tier = tier
+                best_require = rule.get('require', ['verification'])
+
+print(best_tier + ':' + ','.join(best_require))
+PYEOF
+        )
+        printf '%s' "$result"
+    else
+        # Fallback: basic grep-based matching when python3 is absent.
+        # State machine: parse match/tier/require lines, test each file against each rule.
+        # C1 fix: actually update tier/require when a pattern matches.
+        local best_tier="minimal"
+        local best_require="verification"
+        declare -A TIER_ORDER=([minimal]=0 [standard]=1 [elevated]=2 [critical]=3)
+
+        local cur_match="" cur_tier="" cur_require=""
+        _flush_rule() {
+            # Test all files against cur_match pattern; update best if higher tier
+            [ -z "$cur_match" ] && return
+            local pat="${cur_match//\*\*/*}"
+            for f in $files; do
+                case "$f" in
+                    $pat)
+                        local t="${cur_tier:-minimal}"
+                        local r="${cur_require:-verification}"
+                        if [ "${TIER_ORDER[$t]:-0}" -gt "${TIER_ORDER[$best_tier]:-0}" ]; then
+                            best_tier="$t"
+                            best_require="$r"
+                        fi
+                        ;;
+                esac
+            done
+        }
+
+        local in_rules=0
+        while IFS= read -r line; do
+            local stripped
+            stripped=$(printf '%s' "$line" | sed 's/^[[:space:]]*//')
+            [ "$stripped" = "rules:" ] && in_rules=1 && continue
+            [ "$in_rules" -eq 0 ] && continue
+            case "$stripped" in
+                "- match:"*)
+                    _flush_rule
+                    cur_match=$(printf '%s' "$stripped" | sed 's/^- match:[[:space:]]*//' | tr -d '"')
+                    cur_tier=""
+                    cur_require=""
+                    ;;
+                "tier:"*)
+                    cur_tier=$(printf '%s' "$stripped" | sed 's/^tier:[[:space:]]*//')
+                    ;;
+                "require:"*)
+                    cur_require=$(printf '%s' "$stripped" | sed 's/^require:[[:space:]]*//' | tr -d '[]' | tr ',' ' ' | tr -s ' ')
+                    ;;
+            esac
+        done < "$policy"
+        _flush_rule
+
+        printf '%s:%s' "$best_tier" "${best_require// /,}"
+    fi
+}
+
+POLICY_RESULT=$(_match_policy "$TASK_FILES" "$POLICY_FILE")
+TIER="${POLICY_RESULT%%:*}"
+REQUIRED_CSV="${POLICY_RESULT#*:}"
+
+# --- Check evidence ---
+# M2 fix: fall back to active.task from forge-state when FORGE_TASK_ID not set
+if [ -z "$TASK_ID" ] && command -v forge-state &>/dev/null; then
+    TASK_ID=$(forge-state get "active.task" --project-dir "$PROJECT_DIR" 2>/dev/null || true)
+fi
+if [ -z "$TASK_ID" ]; then
+    printf 'Cannot complete: FORGE_TASK_ID not set and no active.task in state — cannot verify evidence\n'
+    printf 'Set active task: forge-state set active.task <task-id> --project-dir %s\n' "$PROJECT_DIR"
+    exit 2
+fi
+
+# Get list of artifacts already in evidence
+EVIDENCE_LIST=""
+if command -v forge-evidence &>/dev/null; then
+    EVIDENCE_LIST=$(forge-evidence list "$TASK_ID" --project-dir "$PROJECT_DIR" 2>/dev/null || true)
+fi
+
+# For minimal tier with verification evidence, always allow
+if [ "$TIER" = "minimal" ]; then
+    # Still require at least verification
+    if echo "$EVIDENCE_LIST" | grep -qi "verification"; then
+        exit 0
+    fi
+    printf 'Cannot complete: missing verification evidence for task %s (tier: %s)\n' "$TASK_ID" "$TIER"
+    printf 'Add evidence with: forge-evidence add %s "verification:..." --project-dir %s\n' "$TASK_ID" "$PROJECT_DIR"
+    exit 2
+fi
+
+# For other tiers, check each required artifact
+MISSING=()
+IFS=',' read -ra REQUIRED_ARR <<< "$REQUIRED_CSV"
+for artifact in "${REQUIRED_ARR[@]}"; do
+    artifact=$(printf '%s' "$artifact" | tr -d ' ')
+    [ -z "$artifact" ] && continue
+    if ! echo "$EVIDENCE_LIST" | grep -qi "$artifact"; then
+        MISSING+=("$artifact")
+    fi
+done
+
+if [ "${#MISSING[@]}" -eq 0 ]; then
+    exit 0
+fi
+
+printf 'Cannot complete task %s: missing required evidence for tier "%s"\n' "$TASK_ID" "$TIER"
+printf 'Missing: %s\n' "${MISSING[*]}"
+printf 'Add evidence with: forge-evidence add %s "<artifact>" --project-dir %s\n' "$TASK_ID" "$PROJECT_DIR"
+exit 2
