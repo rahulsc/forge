@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# pre-commit-gate — PreToolUse wrapper that intercepts git commit commands
+# Reads JSON from stdin (PreToolUse format), checks if the Bash command is
+# a git commit, and if so runs the specified pre-commit hook script.
+#
+# Usage (from hooks.json):
+#   pre-commit-gate <hook-script> [args...]
+#
+# Returns PreToolUse JSON with permissionDecision:"deny" if the hook blocks,
+# or exits 0 to allow.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
+# Read JSON input from stdin
+INPUT=$(cat)
+
+# Extract the bash command from tool_input.command
+COMMAND=""
+if command -v jq &>/dev/null; then
+    COMMAND=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // ""' 2>/dev/null || true)
+fi
+
+# Only intercept git commit commands
+if ! printf '%s' "$COMMAND" | grep -qE '^\s*git\s+commit\b'; then
+    exit 0
+fi
+
+# Run the actual pre-commit hook script
+HOOK_SCRIPT="$1"
+shift
+
+OUTPUT=""
+EXIT_CODE=0
+OUTPUT=$("$HOOK_SCRIPT" "$@" 2>&1) || EXIT_CODE=$?
+
+if [ "$EXIT_CODE" -eq 0 ]; then
+    exit 0
+fi
+
+# Hook wants to block — return PreToolUse deny decision
+REASON="${OUTPUT:-Pre-commit check failed}"
+# Escape for JSON
+REASON=$(printf '%s' "$REASON" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))' 2>/dev/null || printf '"%s"' "$REASON")
+
+cat <<ENDJSON
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": ${REASON}
+  }
+}
+ENDJSON
