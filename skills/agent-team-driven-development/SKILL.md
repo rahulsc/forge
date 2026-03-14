@@ -182,6 +182,30 @@ Wave Cleanup Routine:
 
 **The key rule:** No wave starts with stale tasks from the previous wave. If TaskList shows any `in_progress` task after step 5, something is wrong — investigate before proceeding.
 
+## Status Reporting
+
+Post status updates at two points during execution. This is a text convention — no special tooling needed.
+
+**After each task completion** — post a per-wave status showing which tasks in the current wave are done vs still in progress:
+
+```
+Wave 1 Status:
+  T3 [done]  restructurer — project restructure (commit 0d585c8)
+  T4 [WIP]   metadata-agent — repo metadata
+  T5 [WIP]   readme-writer — README rewrite
+```
+
+**Between waves** (as part of Wave Cleanup Routine step 7) — post a full progress summary:
+
+```
+Progress: 3/7 tasks complete (Waves 0-1 done, starting Wave 2)
+  T1 [done] T2 [done] T3 [done]
+  T4 [next] T5 [next] T6 [next]
+  T7 [blocked by T4,T5,T6]
+```
+
+These summaries make multi-agent execution visible at a glance.
+
 ## Pre-Flight Context Check
 
 Before starting each new wave, check context remaining:
