@@ -162,6 +162,26 @@ forge-evidence add task-3 diff "abc1234: 3 files changed, 87 insertions(+), 12 d
 
 On session resume (cold start), read state via `forge-state get plan.current_wave` and `forge-state get plan.completed_tasks` — skip completed tasks, resume from current wave.
 
+## Wave Cleanup Routine
+
+Run this routine after each wave completes AND during Phase 3 (final completion). This routine runs BEFORE the next wave starts — not after shutdown, not as an afterthought.
+
+```
+Wave Cleanup Routine:
+1. TaskList — get current state of all tasks
+2. For each task in the completed wave:
+   → TaskUpdate status=completed (if not already)
+3. For each agent-created sub-task (impl-task-*, review-task-*, qa-wave-*):
+   → TaskUpdate status=completed
+4. TaskList — verify zero stale in_progress tasks remain
+5. If stale tasks found:
+   → Force-complete with TaskUpdate, log: "force-cleaned by lead after wave N"
+6. Send shutdown to agents no longer needed for subsequent waves
+7. Post between-waves status summary (see Status Reporting)
+```
+
+**The key rule:** No wave starts with stale tasks from the previous wave. If TaskList shows any `in_progress` task after step 5, something is wrong — investigate before proceeding.
+
 ## Pre-Flight Context Check
 
 Before starting each new wave, check context remaining:
@@ -287,20 +307,21 @@ digraph agent_team {
 
 **Between waves:**
 1. All tasks in current wave must pass both reviews before starting next wave
-2. Merge all implementer worktree branches into main worktree
+2. Squash-merge all implementer worktree branches into main worktree (see Merge Strategy)
 3. Verify integration by running tests on merged result
 3.5. **Wave validation (elevated/critical tiers):** Dispatch `forge:validating-wave-compliance` to verify cross-task consistency, evidence completeness, and integration health before proceeding. At elevated tier, this is advisory; at critical tier, failures block the next wave.
-4. **If QA in roster:** Have QA agent write tests for next+1 wave's tasks in the lead's worktree (e.g., while Wave 2 implementers work, QA writes tests for Wave 3). This keeps the pipeline flowing — implementers always have pre-written tests waiting.
-5. Aggregate wave evidence: `forge-evidence add wave-<N> command "<merged test results>"` and `forge-evidence add wave-<N> diff "<merge commit SHA + stat>"`
-6. Update `forge-state set plan.current_wave <N+1>`
-7. Check context remaining; run `/compact` if below 50%
-8. Message existing implementers with next wave's tasks + context from previous waves. **If QA wrote tests:** include the test file paths so implementers run them RED before implementing.
+4. **Run Wave Cleanup Routine** — mark tasks complete, clean sub-tasks, verify no stale state, post status summary
+5. **If QA in roster:** Have QA agent write tests for next+1 wave's tasks in the lead's worktree (e.g., while Wave 2 implementers work, QA writes tests for Wave 3). This keeps the pipeline flowing — implementers always have pre-written tests waiting.
+6. Aggregate wave evidence: `forge-evidence add wave-<N> command "<merged test results>"` and `forge-evidence add wave-<N> diff "<merge commit SHA + stat>"`
+7. Update `forge-state set plan.current_wave <N+1>`
+8. Check context remaining; run `/compact` if below 50%
+9. Message existing implementers with next wave's tasks + context from previous waves. **If QA wrote tests:** include the test file paths so implementers run them RED before implementing.
 
 ### Phase 3: Completion
 
 1. All waves done, all tasks reviewed
 2. Dispatch final cross-cutting code reviewer (`forge:code-reviewer`) for entire implementation
-3. **Clean up task list** — mark all remaining `in_progress` tasks as `completed` via `TaskUpdate`. This includes implementer tasks, review tasks, QA tasks, and any other sub-tasks created during execution. Do this BEFORE shutdown so the status line reflects completion.
+3. **Run Wave Cleanup Routine** for the final wave — this handles all task status cleanup
 4. Shutdown all implementers via `SendMessage` with `type: "shutdown_request"` (recipient = implementer name)
 5. `TeamDelete` (takes no parameters — uses current session's team context)
 6. Use `forge:finishing-a-development-branch`
