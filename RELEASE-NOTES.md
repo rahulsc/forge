@@ -1,5 +1,58 @@
 # Forge Release Notes
 
+## v0.2.0 (2026-03-14)
+
+### Trust, Identity, and Documentation
+
+The first staged Beta release. Forge now looks, installs, and documents like Forge.
+
+#### Identity Cleanup
+- All 15 stale references to `rahulsc/superpowers` replaced with `rahulsc/forge`
+- Plugin manifests, install docs, tests, and HTML templates updated
+- Completed plan statuses corrected (forge-v0, forge-clean-break)
+
+#### Skill Convention Audit
+- All 21 skills audited for path conventions, artifact naming, and cross-skill references
+- Brainstorming skill fixed: design doc path corrected from `docs/plans/<project>/design.md` to `docs/<project>/design/design.md`
+
+#### Project Structure Restructure
+- Product artifacts moved from `.forge/` to top-level directories: `bin/`, `policies/`, `adapters/`, `workflows/`, `packs/`
+- New `templates/` directory with blank scaffolding for project adoption
+- `.forge/` now contains only per-project configuration (project.yaml, shared/, local/)
+- 39 files updated with new paths across skills, hooks, tests, and bin tools
+- ADR 001 documents the restructure decision
+
+#### README Rewrite
+- Complete rewrite with outcome-first structure (416 lines)
+- 8 outcome workflows documented: adopt, start feature, fix bug, refactor, review, resume, release, investigate
+- Skill flow metro map (Mermaid diagram) showing how skills compose into pipelines
+- Capability-level comparison chart vs 7 competing tools
+- Getting started walkthrough, verify installation guide, FAQ
+- Risk-scaled ceremony explained visually
+
+#### Platform Install Docs
+- All platform docs updated with correct post-restructure paths
+- Verify Installation sections added to each platform
+- Troubleshooting sections added to each platform
+
+#### Repo Metadata
+- GitHub description and topics set
+- Issue templates (bug report, feature request) added
+- PR template added
+
+#### Forge Self-Documentation
+- `.forge/shared/architecture.md` filled with Forge's actual architecture
+- `.forge/shared/conventions.md` filled with Forge's coding conventions
+- First ADR written (001: Product Artifacts Top-Level)
+
+#### Beta Design Document
+- Comprehensive design-v3.md covering 8 work streams for v0.2.0–v0.5.0
+- Full competitive analysis of 15+ tools
+- 6 reference project specifications for dogfooding
+- Deviation worklog with 8 entries from v0.2.0 development
+
+---
+
 ## v0.1.0 (2026-03-13)
 
 ### Initial Release — Clean Break from Superpowers
