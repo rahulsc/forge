@@ -166,6 +166,19 @@ Look for `<SYMLINK>` or `<JUNCTION>` in the output.
 **Symlinks not working after git clone:**
 - Run `git config --global core.symlinks true` and re-clone
 
+## Verify Installation
+
+After installing, verify Forge is working:
+
+1. Open a new session in OpenCode
+2. Say: "I'd like to start a new feature"
+3. You should see Forge activate with: "I'm using the brainstorming skill to explore and design before implementing."
+
+If Forge doesn't activate:
+- Check that the plugin/extension is installed and enabled
+- Restart your OpenCode session
+- See Troubleshooting below
+
 ## Usage
 
 ### Finding Skills
@@ -281,27 +294,42 @@ Restart OpenCode to load the updates.
 
 ## Troubleshooting
 
-### Plugin not loading
+### Forge skills don't activate
+- Verify the plugin is installed: check `ls -l ~/.config/opencode/plugins/forge.js`
+- Restart your session — hooks initialize on session start
+- Try explicitly: "Use the forge:brainstorming skill" to test direct invocation
 
+### Plugin not loading
 1. Check plugin exists: `ls ~/.config/opencode/forge/.opencode/plugins/forge.js`
 2. Check symlink/junction: `ls -l ~/.config/opencode/plugins/` (macOS/Linux) or `dir /AL %USERPROFILE%\.config\opencode\plugins` (Windows)
 3. Check OpenCode logs: `opencode run "test" --print-logs --log-level DEBUG`
 4. Look for plugin loading message in logs
 
-### Skills not found
+### Permission errors on hook scripts
+- Ensure hook scripts are executable: `chmod +x hooks/*`
+- Check your OpenCode plugin configuration at `~/.config/opencode/`
 
+### State initialization failures
+- Forge stores state in `.forge/local/` — ensure the directory exists
+- Try running: `bin/forge-state init --project-dir .`
+- If sqlite3 is not available, Forge falls back to JSON storage automatically
+
+### Plugin not detected
+- Ensure your clone path is correct: `~/.config/opencode/forge`
+- Check that the plugin manifest exists: `ls ~/.config/opencode/forge/.opencode/plugins/forge.js`
+- Re-run the install commands (steps 2 and 3)
+
+### Skills not found
 1. Verify skills symlink: `ls -l ~/.config/opencode/skills/forge` (should point to forge/skills/)
 2. Use OpenCode's `skill` tool to list available skills
 3. Check skill structure: each skill needs a `SKILL.md` file with valid frontmatter
 
 ### Windows: Module not found error
-
 If you see `Cannot find module` errors on Windows:
 - **Cause:** Git Bash `ln -sf` copies files instead of creating symlinks
 - **Fix:** Use `mklink /J` directory junctions instead (see Windows installation steps)
 
 ### Bootstrap not appearing
-
 1. Verify forge-routing skill exists: `ls ~/.config/opencode/forge/skills/forge-routing/SKILL.md`
 2. Check OpenCode version supports `experimental.chat.system.transform` hook
 3. Restart OpenCode after plugin changes

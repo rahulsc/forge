@@ -37,7 +37,24 @@ ln -s ~/.config/opencode/forge/skills ~/.config/opencode/skills/forge
 
 Restart OpenCode. The plugin will automatically inject forge context.
 
-Verify by asking: "do you have forge?"
+## Verify Installation
+
+After installing, verify Forge is working:
+
+1. Open a new session in OpenCode
+2. Say: "I'd like to start a new feature"
+3. You should see Forge activate with: "I'm using the brainstorming skill to explore and design before implementing."
+
+If Forge doesn't activate:
+- Check that the plugin and skills symlinks are in place (see below)
+- Restart your OpenCode session
+- See Troubleshooting below
+
+**Check symlinks:**
+```bash
+ls -l ~/.config/opencode/plugins/forge.js
+ls -l ~/.config/opencode/skills/forge
+```
 
 ## Usage
 
@@ -93,17 +110,34 @@ git pull
 
 ## Troubleshooting
 
-### Plugin not loading
+### Forge skills don't activate
+- Verify the plugin is installed: check `ls -l ~/.config/opencode/plugins/forge.js`
+- Restart your session — hooks initialize on session start
+- Try explicitly: "Use the forge:brainstorming skill" to test direct invocation
 
+### Plugin not loading
 1. Check plugin symlink: `ls -l ~/.config/opencode/plugins/forge.js`
 2. Check source exists: `ls ~/.config/opencode/forge/.opencode/plugins/forge.js`
 3. Check OpenCode logs for errors
 
 ### Skills not found
-
 1. Check skills symlink: `ls -l ~/.config/opencode/skills/forge`
 2. Verify it points to: `~/.config/opencode/forge/skills`
 3. Use `skill` tool to list what's discovered
+
+### Permission errors on hook scripts
+- Ensure hook scripts are executable: `chmod +x hooks/*`
+- Check your OpenCode plugin configuration at `~/.config/opencode/`
+
+### State initialization failures
+- Forge stores state in `.forge/local/` — ensure the directory exists
+- Try running: `bin/forge-state init --project-dir .`
+- If sqlite3 is not available, Forge falls back to JSON storage automatically
+
+### Plugin not detected
+- Ensure your clone path is correct: `~/.config/opencode/forge`
+- Check that the plugin manifest exists: `ls ~/.config/opencode/forge/.opencode/plugins/forge.js`
+- Re-run the install commands (steps 2 and 3)
 
 ### Tool mapping
 
