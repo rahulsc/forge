@@ -38,7 +38,7 @@ Invoke `classify-risk` to determine the risk tier for this project:
 classify-risk <files-or-dirs-affected> --scope <task-count>
 ```
 
-`classify-risk` reads `.forge/policies/` and returns one of: `minimal`, `standard`, `elevated`, `critical`.
+`classify-risk` reads `policies/` and returns one of: `minimal`, `standard`, `elevated`, `critical`.
 
 Present the result to the user:
 

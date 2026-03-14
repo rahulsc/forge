@@ -11,7 +11,7 @@
 - **CLI tools:** kebab-case (`classify-risk`, `forge-state`, `forge-evidence`)
 - **Design docs:** `docs/<project>/design/design.md`
 - **Plans:** `docs/<project>/plans/plan.md`
-- **Config files:** kebab-case YAML (`.forge/policies/default.yaml`)
+- **Config files:** kebab-case YAML (`policies/default.yaml`)
 
 ## Style
 

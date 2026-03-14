@@ -23,7 +23,7 @@ classify risk, and route to the correct skill.
 
 ### Risk Tiers
 
-File paths in this repo are classified by risk tier (see `.forge/policies/`):
+File paths in this repo are classified by risk tier (see `policies/`):
 - **critical** — auth, migrations, payments: requires design doc, plan, TDD, security review
 - **elevated** — public API, admin: requires plan, TDD, evidence, review
 - **standard** — application code: requires plan, test evidence, verification
@@ -40,7 +40,7 @@ forge-gate check <gate-name>       # check lifecycle gate
 
 ### Tools Location
 
-Forge tools live in `.forge/bin/`. Add to PATH or call directly:
+Forge tools live in `bin/`. Add to PATH or call directly:
 
 ```bash
 export PATH=".forge/bin:$PATH"
@@ -72,7 +72,7 @@ classify risk, and route to the correct skill.
 
 ### Risk Tiers
 
-File paths in this repo are classified by risk tier (see `.forge/policies/`):
+File paths in this repo are classified by risk tier (see `policies/`):
 - **critical** — requires design doc, plan, TDD, security review
 - **elevated** — requires plan, TDD, evidence, review
 - **standard** — requires plan, test evidence, verification
@@ -114,7 +114,7 @@ This repository uses **Forge** for structured AI development workflows.
 
 Before starting any task:
 1. Read `.forge/project.yaml` for project configuration
-2. Read `.forge/policies/default.yaml` for risk tier rules
+2. Read `policies/default.yaml` for risk tier rules
 3. Follow the risk tier for the files you will touch
 
 ## Risk Tiers
@@ -131,15 +131,15 @@ Before starting any task:
 Record evidence for each task:
 
 ```bash
-.forge/bin/forge-evidence add <task-id> <artifact>
-.forge/bin/forge-evidence list <task-id>
+bin/forge-evidence add <task-id> <artifact>
+bin/forge-evidence list <task-id>
 ```
 
 ## State
 
 ```bash
-.forge/bin/forge-state get <key>
-.forge/bin/forge-state set <key> <value>
+bin/forge-state get <key>
+bin/forge-state set <key> <value>
 ```
 ~~~
 

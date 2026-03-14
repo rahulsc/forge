@@ -10,10 +10,10 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin"
 export PATH="$FORGE_BIN:$PATH"
 
-# Set up an isolated temp project with a .forge/policies/default.yaml
+# Set up an isolated temp project with a policies/default.yaml
 TMPDIR=$(mktemp -d /tmp/forge-risk-policy-XXXXXX)
 trap "rm -rf '$TMPDIR'" EXIT
 export FORGE_PROJECT_DIR="$TMPDIR"
@@ -23,7 +23,7 @@ echo ""
 
 # Pre-check: command available
 if ! command -v classify-risk &>/dev/null; then
-    fail "classify-risk not found — expected at .forge/bin/classify-risk"
+    fail "classify-risk not found — expected at bin/classify-risk"
     echo ""
     echo "============================================"
     echo "Results: $PASS passed, $FAIL failed"
@@ -33,11 +33,11 @@ fi
 
 pass "classify-risk is on PATH"
 
-# Bootstrap the .forge/ layout needed for policy matching
-mkdir -p "$TMPDIR/.forge/policies"
+# Bootstrap the layout needed for policy matching
+mkdir -p "$TMPDIR/policies"
 mkdir -p "$TMPDIR/.forge/local"
 
-cat > "$TMPDIR/.forge/policies/default.yaml" <<'YAML'
+cat > "$TMPDIR/policies/default.yaml" <<'YAML'
 rules:
   - match: "db/migrations/**"
     tier: critical

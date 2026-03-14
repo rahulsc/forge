@@ -1,4 +1,4 @@
-# .forge/policies/default.yaml — Default risk classification policy
+# policies/default.yaml — Default risk classification policy
 #
 # This policy maps file glob patterns to risk tiers.
 # Forge uses these rules to determine what verification is required

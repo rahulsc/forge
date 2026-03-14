@@ -1,4 +1,4 @@
-# .forge/workflows/example.yaml — Example workflow definition
+# workflows/example.yaml — Example workflow definition
 #
 # Workflows describe multi-step agent sequences for common engineering tasks.
 # NOTE: The workflow engine is post-v0. This file is illustrative schema only.

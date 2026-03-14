@@ -12,10 +12,10 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-ROOT="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 SKILL_FILE="$ROOT/skills/forge-packs/SKILL.md"
-FORGE_PACK_SCRIPT="$ROOT/.forge/bin/forge-pack"
+FORGE_PACK_SCRIPT="$ROOT/bin/forge-pack"
 HELLO_WORLD_DIR="$ROOT/forge-pack-hello-world"
 HW_MANIFEST="$HELLO_WORLD_DIR/pack.yaml"
 HW_POLICY="$HELLO_WORLD_DIR/policies/greeting-policy.yaml"
@@ -140,11 +140,11 @@ if [ -f "$SKILL_FILE" ]; then
 
     # ---- Documents install target path ---
     echo ""
-    echo "--- Install path (.forge/packs/<name>/) ---"
-    if grep -qE "\.forge/packs/" "$SKILL_FILE"; then
-        pass "forge-packs: documents .forge/packs/<name>/ install path"
+    echo "--- Install path (packs/<name>/) ---"
+    if grep -qE "\packs/" "$SKILL_FILE"; then
+        pass "forge-packs: documents packs/<name>/ install path"
     else
-        fail "forge-packs: must document .forge/packs/<name>/ as install target"
+        fail "forge-packs: must document packs/<name>/ as install target"
     fi
 
     # ---- Documents policy merge with source annotation ----
@@ -158,19 +158,19 @@ if [ -f "$SKILL_FILE" ]; then
 fi
 
 # ===========================================================
-# PART 2: .forge/bin/forge-pack script
+# PART 2: bin/forge-pack script
 # ===========================================================
 echo ""
 echo "=========================================="
-echo "PART 2: .forge/bin/forge-pack script"
+echo "PART 2: bin/forge-pack script"
 echo "=========================================="
 
 echo ""
 echo "--- File existence ---"
 if [ -f "$FORGE_PACK_SCRIPT" ]; then
-    pass ".forge/bin/forge-pack script exists"
+    pass "bin/forge-pack script exists"
 else
-    fail ".forge/bin/forge-pack script not found"
+    fail "bin/forge-pack script not found"
 fi
 
 if [ -f "$FORGE_PACK_SCRIPT" ]; then
@@ -178,9 +178,9 @@ if [ -f "$FORGE_PACK_SCRIPT" ]; then
     echo ""
     echo "--- Is executable ---"
     if [ -x "$FORGE_PACK_SCRIPT" ]; then
-        pass ".forge/bin/forge-pack is executable"
+        pass "bin/forge-pack is executable"
     else
-        fail ".forge/bin/forge-pack must be executable (chmod +x)"
+        fail "bin/forge-pack must be executable (chmod +x)"
     fi
 
     # ---- Is shell script (not Node.js) ----
@@ -188,87 +188,87 @@ if [ -f "$FORGE_PACK_SCRIPT" ]; then
     echo "--- Is bash shell script (no Node.js dependency) ---"
     SHEBANG=$(head -1 "$FORGE_PACK_SCRIPT")
     if echo "$SHEBANG" | grep -qE "^#!/.*bash|^#!/.*sh"; then
-        pass ".forge/bin/forge-pack is a bash/sh script"
+        pass "bin/forge-pack is a bash/sh script"
     else
-        fail ".forge/bin/forge-pack must be a bash shell script, shebang got: '$SHEBANG'"
+        fail "bin/forge-pack must be a bash shell script, shebang got: '$SHEBANG'"
     fi
 
     if grep -qiE "node |nodejs|require\(|import " "$FORGE_PACK_SCRIPT"; then
-        fail ".forge/bin/forge-pack must not use Node.js (bash only)"
+        fail "bin/forge-pack must not use Node.js (bash only)"
     else
-        pass ".forge/bin/forge-pack has no Node.js dependency"
+        pass "bin/forge-pack has no Node.js dependency"
     fi
 
     # ---- Has install subcommand ----
     echo ""
     echo "--- Has install subcommand ---"
     if grep -qiE "install\b" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack handles 'install' subcommand"
+        pass "bin/forge-pack handles 'install' subcommand"
     else
-        fail ".forge/bin/forge-pack must handle 'install' subcommand"
+        fail "bin/forge-pack must handle 'install' subcommand"
     fi
 
     # ---- Has remove subcommand ----
     echo ""
     echo "--- Has remove subcommand ---"
     if grep -qiE "remove\b" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack handles 'remove' subcommand"
+        pass "bin/forge-pack handles 'remove' subcommand"
     else
-        fail ".forge/bin/forge-pack must handle 'remove' subcommand"
+        fail "bin/forge-pack must handle 'remove' subcommand"
     fi
 
     # ---- Has list subcommand ----
     echo ""
     echo "--- Has list subcommand ---"
     if grep -qiE "\blist\b" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack handles 'list' subcommand"
+        pass "bin/forge-pack handles 'list' subcommand"
     else
-        fail ".forge/bin/forge-pack must handle 'list' subcommand"
+        fail "bin/forge-pack must handle 'list' subcommand"
     fi
 
     # ---- Validates .forge/project.yaml before any operation ----
     echo ""
     echo "--- Validates .forge/project.yaml exists before operating ---"
     if grep -qE "project\.yaml|\.forge.*project" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack checks .forge/project.yaml exists"
+        pass "bin/forge-pack checks .forge/project.yaml exists"
     else
-        fail ".forge/bin/forge-pack must validate .forge/project.yaml exists before any operation"
+        fail "bin/forge-pack must validate .forge/project.yaml exists before any operation"
     fi
 
     # ---- Validates pack.yaml schema on install ----
     echo ""
     echo "--- Validates pack.yaml on install ---"
     if grep -qE "pack\.yaml" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack validates pack.yaml on install"
+        pass "bin/forge-pack validates pack.yaml on install"
     else
-        fail ".forge/bin/forge-pack must validate pack.yaml exists and is valid"
+        fail "bin/forge-pack must validate pack.yaml exists and is valid"
     fi
 
     # ---- Rejects invalid pack.yaml with clear error ----
     echo ""
     echo "--- Rejects missing/invalid pack.yaml with error ---"
     if grep -qiE "Error:|error|invalid|missing|not found" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack emits clear error messages"
+        pass "bin/forge-pack emits clear error messages"
     else
-        fail ".forge/bin/forge-pack must emit clear error messages when pack.yaml is invalid/missing"
+        fail "bin/forge-pack must emit clear error messages when pack.yaml is invalid/missing"
     fi
 
     # ---- Source annotation on policy merge ----
     echo ""
     echo "--- Annotates merged policy rules with source: pack/<name> ---"
     if grep -qiE "source:.*pack|source: pack" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack adds 'source: pack/<name>' annotation to merged policy rules"
+        pass "bin/forge-pack adds 'source: pack/<name>' annotation to merged policy rules"
     else
-        fail ".forge/bin/forge-pack must annotate merged policy rules with 'source: pack/<name>'"
+        fail "bin/forge-pack must annotate merged policy rules with 'source: pack/<name>'"
     fi
 
     # ---- Install is idempotent (remove-then-reinstall) ----
     echo ""
     echo "--- Install is idempotent (update in place) ---"
     if grep -qiE "already.*install|install.*already|idempotent|remove.*install|reinstall|update.*place" "$FORGE_PACK_SCRIPT"; then
-        pass ".forge/bin/forge-pack handles re-install idempotently"
+        pass "bin/forge-pack handles re-install idempotently"
     else
-        fail ".forge/bin/forge-pack must handle re-install idempotently (remove then install)"
+        fail "bin/forge-pack must handle re-install idempotently (remove then install)"
     fi
 fi
 
@@ -557,15 +557,15 @@ YAML
 
     echo ""
     echo "--- Pack directory created after install ---"
-    if [ -d "$TMPDIR_TEST/.forge/packs/hello-world" ]; then
-        pass "forge-pack install: created .forge/packs/hello-world/"
+    if [ -d "$TMPDIR_TEST/packs/hello-world" ]; then
+        pass "forge-pack install: created packs/hello-world/"
     else
-        fail "forge-pack install: .forge/packs/hello-world/ not created"
+        fail "forge-pack install: packs/hello-world/ not created"
     fi
 
     echo ""
     echo "--- Policy rules with source: pack/hello-world after install ---"
-    if grep -rq "source: pack/hello-world" "$TMPDIR_TEST/.forge/policies/" 2>/dev/null; then
+    if grep -rq "source: pack/hello-world" "$TMPDIR_TEST/policies/" 2>/dev/null; then
         pass "forge-pack install: merged policy rules include 'source: pack/hello-world'"
     else
         fail "forge-pack install: policy rules missing 'source: pack/hello-world' annotation"
@@ -592,15 +592,15 @@ YAML
 
     echo ""
     echo "--- Pack directory gone after remove ---"
-    if [ ! -d "$TMPDIR_TEST/.forge/packs/hello-world" ]; then
-        pass "forge-pack remove: deleted .forge/packs/hello-world/"
+    if [ ! -d "$TMPDIR_TEST/packs/hello-world" ]; then
+        pass "forge-pack remove: deleted packs/hello-world/"
     else
-        fail "forge-pack remove: .forge/packs/hello-world/ still exists (not cleaned up)"
+        fail "forge-pack remove: packs/hello-world/ still exists (not cleaned up)"
     fi
 
     echo ""
     echo "--- No orphaned policy rules after remove ---"
-    if ! grep -rq "source: pack/hello-world" "$TMPDIR_TEST/.forge/policies/" 2>/dev/null; then
+    if ! grep -rq "source: pack/hello-world" "$TMPDIR_TEST/policies/" 2>/dev/null; then
         pass "forge-pack remove: no orphaned 'source: pack/hello-world' rules in policies"
     else
         fail "forge-pack remove: orphaned policy rules with 'source: pack/hello-world' still exist"
@@ -656,7 +656,7 @@ YAML
     fi
 
     # Count source annotations — should be exactly one set (not doubled)
-    SOURCE_COUNT=$(grep -r "source: pack/hello-world" "$TMPDIR_TEST/.forge/policies/" 2>/dev/null | wc -l)
+    SOURCE_COUNT=$(grep -r "source: pack/hello-world" "$TMPDIR_TEST/policies/" 2>/dev/null | wc -l)
     if [ "$SOURCE_COUNT" -eq 1 ]; then
         pass "forge-pack install: re-install does not duplicate policy rules ($SOURCE_COUNT annotation)"
     else

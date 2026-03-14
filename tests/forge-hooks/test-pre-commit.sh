@@ -10,8 +10,9 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
-HOOKS_DIR="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/hooks"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_BIN="$ROOT/bin"
+HOOKS_DIR="$ROOT/hooks"
 export PATH="$FORGE_BIN:$HOOKS_DIR:$PATH"
 
 echo "=== test-pre-commit: forge-pre-commit hook ==="
@@ -39,10 +40,10 @@ git -C "$TMPDIR" init --quiet
 git -C "$TMPDIR" config user.email "test@forge.test"
 git -C "$TMPDIR" config user.name "Forge Test"
 
-mkdir -p "$TMPDIR/.forge/policies"
+mkdir -p "$TMPDIR/policies"
 mkdir -p "$TMPDIR/.forge/local"
 
-cat > "$TMPDIR/.forge/policies/default.yaml" <<'YAML'
+cat > "$TMPDIR/policies/default.yaml" <<'YAML'
 rules:
   - match: "db/migrations/**"
     tier: critical

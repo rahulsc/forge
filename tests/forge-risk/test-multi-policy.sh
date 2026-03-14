@@ -10,7 +10,7 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin"
 export PATH="$FORGE_BIN:$PATH"
 
 TMPDIR=$(mktemp -d /tmp/forge-multipolicy-XXXXXX)
@@ -21,7 +21,7 @@ echo "=== test-multi-policy: multiple policies, highest tier wins ==="
 echo ""
 
 if ! command -v classify-risk &>/dev/null; then
-    fail "classify-risk not found — expected at .forge/bin/classify-risk"
+    fail "classify-risk not found — expected at bin/classify-risk"
     echo ""
     echo "============================================"
     echo "Results: $PASS passed, $FAIL failed"
@@ -30,11 +30,11 @@ if ! command -v classify-risk &>/dev/null; then
 fi
 
 echo "--- Setup: two policy files with overlapping patterns ---"
-mkdir -p "$TMPDIR/.forge/policies"
+mkdir -p "$TMPDIR/policies"
 mkdir -p "$TMPDIR/.forge/local"
 
 # base policy: low tiers
-cat > "$TMPDIR/.forge/policies/default.yaml" <<'YAML'
+cat > "$TMPDIR/policies/default.yaml" <<'YAML'
 rules:
   - match: "src/**"
     tier: standard
@@ -45,7 +45,7 @@ rules:
 YAML
 
 # security policy: escalates some patterns
-cat > "$TMPDIR/.forge/policies/security.yaml" <<'YAML'
+cat > "$TMPDIR/policies/security.yaml" <<'YAML'
 rules:
   - match: "src/auth/**"
     tier: elevated
@@ -114,8 +114,8 @@ fi
 
 echo ""
 echo "--- Invalid tier in policy file → error, non-zero exit ---"
-mkdir -p "$TMPDIR/.forge/policies"
-cat > "$TMPDIR/.forge/policies/bad.yaml" <<'YAML'
+mkdir -p "$TMPDIR/policies"
+cat > "$TMPDIR/policies/bad.yaml" <<'YAML'
 rules:
   - match: "bad/**"
     tier: supercritical
@@ -137,7 +137,7 @@ else
 fi
 
 # Remove the bad policy for remaining tests
-rm "$TMPDIR/.forge/policies/bad.yaml"
+rm "$TMPDIR/policies/bad.yaml"
 
 echo ""
 echo "--- No policy files at all: inferred tier ---"

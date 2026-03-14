@@ -52,18 +52,17 @@ triggers:
 
 ## Install Target
 
-Packs are installed to `.forge/packs/<name>/`. After install:
+Packs are installed to `packs/<name>/`. After install:
 
 ```
-.forge/
-  packs/
-    hello-world/        ← pack contents copied here
-      pack.yaml
-      skills/
-      policies/
-      shared/
-  policies/
-    greeting-policy.yaml  ← merged policy rules (with source annotation)
+packs/
+  hello-world/        ← pack contents copied here
+    pack.yaml
+    skills/
+    policies/
+    shared/
+policies/
+  greeting-policy.yaml  ← merged policy rules (with source annotation)
 ```
 
 ## Pack Skill Namespace
@@ -77,7 +76,7 @@ Reference pack skills by this namespace in routing tables and skill invocations.
 
 ## Policy Merge with Source Annotation
 
-When a pack is installed, its policy files are merged into `.forge/policies/`. Each rule gets a `source: pack/<name>` annotation added automatically by `forge-pack`:
+When a pack is installed, its policy files are merged into `policies/`. Each rule gets a `source: pack/<name>` annotation added automatically by `forge-pack`:
 
 ```yaml
 # After installing hello-world pack:
@@ -120,8 +119,8 @@ See `forge:writing-skills` for full skill authoring guidance.
 
 After installing a pack:
 1. Pack skills become available in the `forge:<pack>:<skill>` namespace
-2. Pack policy rules are active in `.forge/policies/` (with source annotation)
-3. Pack shared knowledge is accessible at `.forge/packs/<name>/shared/`
+2. Pack policy rules are active in `policies/` (with source annotation)
+3. Pack shared knowledge is accessible at `packs/<name>/shared/`
 4. `forge-pack list` shows the pack as installed
 
-Packs are project-local and not committed to version control unless you choose to commit `.forge/packs/`.
+Packs are project-local and not committed to version control unless you choose to commit `packs/`.

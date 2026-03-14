@@ -109,7 +109,7 @@ The detected tier determines plan ceremony:
 | elevated | All standard + design doc reference + wave analysis if team |
 | critical | All elevated + risk register reference + rollback plan + security review note |
 
-Include the tier in the plan header. If classify-risk is unavailable, infer tier from the file paths being modified using the policy rules in `.forge/policies/`.
+Include the tier in the plan header. If classify-risk is unavailable, infer tier from the file paths being modified using the policy rules in `policies/`.
 
 ## Plan Document Structure
 

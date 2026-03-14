@@ -14,7 +14,7 @@ Forge sync has eight steps. Do not skip steps.
 
 - After modifying `.forge/project.yaml`
 - After adding/removing files that match policy rules
-- After a teammate modifies `.forge/shared/` or `.forge/policies/`
+- After a teammate modifies `.forge/shared/` or `policies/`
 - Periodically to refresh adapters and check pack freshness
 - After `forge:adopting-forge` (initial setup) to confirm adapters are current
 
@@ -104,7 +104,7 @@ This repository uses Forge for structured AI workflows.
 **Lint:** <commands.lint | "not configured">
 
 Forge configuration: `.forge/project.yaml`
-Forge policies: `.forge/policies/`
+Forge policies: `policies/`
 ```
 
 After updating, confirm: "Updated CLAUDE.md Forge section."
@@ -130,7 +130,7 @@ This repository uses Forge for structured AI workflows.
 - Lint: <commands.lint>
 
 ## Forge Policies
-See `.forge/policies/` for risk-tier rules governing this repository.
+See `policies/` for risk-tier rules governing this repository.
 ```
 
 After updating, confirm: "Updated AGENTS.md."
@@ -138,11 +138,11 @@ After updating, confirm: "Updated AGENTS.md."
 
 ## Step 6 — Check Installed Packs
 
-If `.forge/packs/` directory does not exist or is empty: skip this step and note "No packs installed."
+If `packs/` directory does not exist or is empty: skip this step and note "No packs installed."
 
-For each pack directory under `.forge/packs/`:
+For each pack directory under `packs/`:
 1. Read `pack.yaml` to get `name` and `version`
-2. Check if a `.forge/packs/<pack-name>/.forge-pack-lock` file exists (indicates locked version)
+2. Check if a `packs/<pack-name>/.forge-pack-lock` file exists (indicates locked version)
 3. Report pack status:
 
 ```
@@ -153,7 +153,7 @@ Installed packs:
 
 **Do NOT auto-update packs.** Only report available updates. User must run pack update explicitly.
 
-Pack update detection: compare `version` field in `pack.yaml` against `.forge/packs/<name>/.available-version` if that file exists. If neither file exists, report "version check unavailable."
+Pack update detection: compare `version` field in `pack.yaml` against `packs/<name>/.available-version` if that file exists. If neither file exists, report "version check unavailable."
 
 
 ## Step 7 — Refresh Local Cache
@@ -202,7 +202,7 @@ If nothing changed: "Forge is fully synced. No action required."
 
 - Do NOT auto-update packs (report only)
 - Do NOT auto-regenerate CLAUDE.md on session start (on-demand only)
-- Do NOT modify `.forge/policies/` — policy changes require explicit adopting-forge or manual edit
+- Do NOT modify `policies/` — policy changes require explicit adopting-forge or manual edit
 - Do NOT remove `.forge/local/` state files (only cache subfolder entries)
 - Do NOT parse ASTs or import graphs — file/directory level only
 

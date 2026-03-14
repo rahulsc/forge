@@ -173,7 +173,7 @@ at the root of your repository.
 - `policies/default.yaml` -- Risk classification rules mapping file patterns to
   tiers (minimal, standard, elevated, critical) with required artifacts per tier.
 
-**Runtime tools** (`.forge/bin/`)
+**Runtime tools** (`bin/`)
 - `classify-risk` -- Determines the risk tier for a set of changed files.
 - `forge-evidence` -- Records and queries evidence artifacts (test runs, reviews,
   sign-offs) required by risk policies.

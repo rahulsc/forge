@@ -44,13 +44,15 @@ Example output:
 
 ## Check 1 — Directory Structure Integrity
 
-Verify the `.forge/` directory exists and contains required subdirectories.
+Verify the project structure exists with required directories.
 
-**Required directories:**
-- `.forge/policies/`
-- `.forge/workflows/`
-- `.forge/packs/`
-- `.forge/adapters/`
+**Required top-level directories (product artifacts):**
+- `policies/`
+- `workflows/`
+- `packs/`
+- `adapters/`
+
+**Required .forge/ directories (project config):**
 - `.forge/shared/`
 - `.forge/local/`
 
@@ -60,8 +62,8 @@ Verify the `.forge/` directory exists and contains required subdirectories.
 3. Report missing directories as `[ERR]`
 
 ```
-[ERR] error directory-structure: missing required directories: .forge/adapters/, .forge/shared/
-  Fix: Run forge:adopting-forge to recreate missing structure, or mkdir -p .forge/adapters .forge/shared
+[ERR] error directory-structure: missing required directories: adapters/, .forge/shared/
+  Fix: Run forge:adopting-forge to recreate missing structure, or mkdir -p adapters .forge/shared
 ```
 
 If `.forge/` does not exist at all:
@@ -214,9 +216,9 @@ If no stale state found:
 
 ## Check 6 — Pack Integrity
 
-Only run if `.forge/packs/` exists and contains at least one pack.
+Only run if `packs/` exists and contains at least one pack.
 
-For each pack under `.forge/packs/`:
+For each pack under `packs/`:
 1. Verify `pack.yaml` exists in the pack directory
 2. Verify `pack.yaml` has `name` and `version` fields
 3. Verify pack does not reference missing policy files
@@ -224,7 +226,7 @@ For each pack under `.forge/packs/`:
 ```
 [OK]   info    pack-integrity: forge-pack-security v1.2.0 — valid
 [WARN] warning pack-integrity: forge-pack-docs — missing version field in pack.yaml
-  Fix: Edit .forge/packs/forge-pack-docs/pack.yaml and add version field
+  Fix: Edit packs/forge-pack-docs/pack.yaml and add version field
 ```
 
 If no packs installed:

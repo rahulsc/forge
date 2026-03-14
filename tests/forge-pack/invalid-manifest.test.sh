@@ -9,8 +9,8 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-ROOT="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0"
-FORGE_PACK="$ROOT/.forge/bin/forge-pack"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_PACK="$ROOT/bin/forge-pack"
 
 echo "=== invalid-manifest.test.sh ==="
 echo ""
@@ -18,7 +18,7 @@ echo ""
 TMPDIR_TEST=$(mktemp -d)
 trap 'rm -rf "$TMPDIR_TEST"' EXIT
 
-mkdir -p "$TMPDIR_TEST/.forge/policies" "$TMPDIR_TEST/.forge/packs"
+mkdir -p "$TMPDIR_TEST/policies" "$TMPDIR_TEST/packs"
 cat > "$TMPDIR_TEST/.forge/project.yaml" <<'YAML'
 name: test-project
 version: 0.1.0

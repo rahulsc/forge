@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Test: .forge/ YAML files parse correctly and have required fields
+# Test: YAML files parse correctly and have required fields
+# Product artifacts (policies/, workflows/) are at top level.
+# .forge/ contains only project config (project.yaml).
 
 set -uo pipefail
 
@@ -9,7 +11,8 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_ROOT="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_ROOT="$PROJECT_ROOT/.forge"
 
 # Helper: check YAML is valid using python (widely available) or yq
 yaml_valid() {
@@ -94,8 +97,8 @@ fi
 echo ""
 
 # --- policies/default.yaml ---
-echo "--- .forge/policies/default.yaml ---"
-POLICY_YAML="$FORGE_ROOT/policies/default.yaml"
+echo "--- policies/default.yaml ---"
+POLICY_YAML="$PROJECT_ROOT/policies/default.yaml"
 
 if [ ! -f "$POLICY_YAML" ]; then
     fail "policies/default.yaml not found — cannot validate schema"
@@ -163,8 +166,8 @@ fi
 echo ""
 
 # --- workflows/example.yaml ---
-echo "--- .forge/workflows/example.yaml ---"
-WORKFLOW_YAML="$FORGE_ROOT/workflows/example.yaml"
+echo "--- workflows/example.yaml ---"
+WORKFLOW_YAML="$PROJECT_ROOT/workflows/example.yaml"
 
 if [ ! -f "$WORKFLOW_YAML" ]; then
     fail "workflows/example.yaml not found — cannot validate schema"

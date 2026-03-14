@@ -25,7 +25,7 @@ Invoke `forge:hello-world:greeting-workflow` when the user asks for:
 
 ## Conventions
 
-See `.forge/packs/hello-world/shared/greeting-conventions.md` for tone and style rules.
+See `packs/hello-world/shared/greeting-conventions.md` for tone and style rules.
 
 ## Evidence
 

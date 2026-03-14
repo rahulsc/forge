@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Test: .forge/ directory structure exists with required files
+# Test: project directory structure exists with required files
+# Product artifacts are at top level; .forge/ contains only project config.
 
 set -uo pipefail
 
@@ -29,31 +30,39 @@ check_dir_exists() {
     fi
 }
 
-# Use the actual project root (not a temp dir) since we're testing repo structure
-FORGE_ROOT="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge"
+# Use the actual project root
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_ROOT="$PROJECT_ROOT/.forge"
 
-echo "=== validate-directory: .forge/ directory structure ==="
-echo "Checking: $FORGE_ROOT"
+echo "=== validate-directory: project directory structure ==="
+echo "Checking: $PROJECT_ROOT"
 echo ""
 
-echo "--- Core directory structure ---"
+echo "--- Top-level product directories ---"
+check_dir_exists "bin/" "$PROJECT_ROOT/bin"
+check_dir_exists "policies/" "$PROJECT_ROOT/policies"
+check_dir_exists "workflows/" "$PROJECT_ROOT/workflows"
+check_dir_exists "packs/" "$PROJECT_ROOT/packs"
+check_dir_exists "adapters/" "$PROJECT_ROOT/adapters"
+check_dir_exists "templates/" "$PROJECT_ROOT/templates"
+
+echo ""
+echo "--- .forge/ project config directories ---"
 check_dir_exists ".forge/ root directory" "$FORGE_ROOT"
-check_dir_exists ".forge/policies/" "$FORGE_ROOT/policies"
-check_dir_exists ".forge/workflows/" "$FORGE_ROOT/workflows"
-check_dir_exists ".forge/packs/" "$FORGE_ROOT/packs"
-check_dir_exists ".forge/adapters/" "$FORGE_ROOT/adapters"
 check_dir_exists ".forge/shared/" "$FORGE_ROOT/shared"
 check_dir_exists ".forge/shared/decisions/" "$FORGE_ROOT/shared/decisions"
 check_dir_exists ".forge/local/" "$FORGE_ROOT/local"
-check_dir_exists ".forge/bin/" "$FORGE_ROOT/bin"
 
 echo ""
-echo "--- Required files ---"
+echo "--- Required files (top-level) ---"
+check_file_exists "policies/default.yaml" "$PROJECT_ROOT/policies/default.yaml"
+check_file_exists "workflows/example.yaml" "$PROJECT_ROOT/workflows/example.yaml"
+check_file_exists "packs/.gitkeep" "$PROJECT_ROOT/packs/.gitkeep"
+check_file_exists "adapters/.gitkeep" "$PROJECT_ROOT/adapters/.gitkeep"
+
+echo ""
+echo "--- Required files (.forge/ config) ---"
 check_file_exists ".forge/project.yaml" "$FORGE_ROOT/project.yaml"
-check_file_exists ".forge/policies/default.yaml" "$FORGE_ROOT/policies/default.yaml"
-check_file_exists ".forge/workflows/example.yaml" "$FORGE_ROOT/workflows/example.yaml"
-check_file_exists ".forge/packs/.gitkeep" "$FORGE_ROOT/packs/.gitkeep"
-check_file_exists ".forge/adapters/.gitkeep" "$FORGE_ROOT/adapters/.gitkeep"
 check_file_exists ".forge/shared/architecture.md" "$FORGE_ROOT/shared/architecture.md"
 check_file_exists ".forge/shared/conventions.md" "$FORGE_ROOT/shared/conventions.md"
 check_file_exists ".forge/shared/decisions/000-template.md" "$FORGE_ROOT/shared/decisions/000-template.md"
@@ -61,8 +70,7 @@ check_file_exists ".forge/local/.gitignore" "$FORGE_ROOT/local/.gitignore"
 
 echo ""
 echo "--- local/ is git-ignored ---"
-# Check that .forge/local/ contents are gitignored
-GITIGNORE_PATH="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/local/.gitignore"
+GITIGNORE_PATH="$FORGE_ROOT/local/.gitignore"
 if [ -f "$GITIGNORE_PATH" ]; then
     if grep -q '\*' "$GITIGNORE_PATH" 2>/dev/null || grep -q '\.db' "$GITIGNORE_PATH" 2>/dev/null; then
         pass ".forge/local/.gitignore ignores local state files"

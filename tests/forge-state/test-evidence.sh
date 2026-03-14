@@ -10,7 +10,7 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin"
 export PATH="$FORGE_BIN:$PATH"
 
 TMPDIR=$(mktemp -d /tmp/forge-evidence-XXXXXX)
@@ -22,7 +22,7 @@ echo ""
 
 # Pre-check: command available
 if ! command -v forge-evidence &>/dev/null; then
-    fail "forge-evidence not found — expected at .forge/bin/forge-evidence"
+    fail "forge-evidence not found — expected at bin/forge-evidence"
     echo ""
     echo "============================================"
     echo "Results: $PASS passed, $FAIL failed"

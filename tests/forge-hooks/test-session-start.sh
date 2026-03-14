@@ -10,8 +10,9 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
-HOOKS_DIR="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/hooks"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_BIN="$ROOT/bin"
+HOOKS_DIR="$ROOT/hooks"
 export PATH="$FORGE_BIN:$HOOKS_DIR:$PATH"
 
 echo "=== test-session-start: forge-session-start hook ==="

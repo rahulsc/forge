@@ -9,8 +9,8 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-ROOT="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0"
-FORGE_PACK="$ROOT/.forge/bin/forge-pack"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+FORGE_PACK="$ROOT/bin/forge-pack"
 HELLO_WORLD="$ROOT/forge-pack-hello-world"
 
 echo "=== install-remove-cycle.test.sh ==="
@@ -20,7 +20,7 @@ echo ""
 TMPDIR_TEST=$(mktemp -d)
 trap 'rm -rf "$TMPDIR_TEST"' EXIT
 
-mkdir -p "$TMPDIR_TEST/.forge/policies" "$TMPDIR_TEST/.forge/packs"
+mkdir -p "$TMPDIR_TEST/policies" "$TMPDIR_TEST/packs"
 cat > "$TMPDIR_TEST/.forge/project.yaml" <<'YAML'
 name: test-project
 version: 0.1.0
@@ -46,13 +46,13 @@ else
     fail "install: exited $RC; output: $OUT"
 fi
 
-if [ -d "$TMPDIR_TEST/.forge/packs/hello-world" ]; then
-    pass "install: .forge/packs/hello-world/ created"
+if [ -d "$TMPDIR_TEST/packs/hello-world" ]; then
+    pass "install: packs/hello-world/ created"
 else
-    fail "install: .forge/packs/hello-world/ not found"
+    fail "install: packs/hello-world/ not found"
 fi
 
-if [ -f "$TMPDIR_TEST/.forge/packs/hello-world/pack.yaml" ]; then
+if [ -f "$TMPDIR_TEST/packs/hello-world/pack.yaml" ]; then
     pass "install: pack.yaml present in install dir"
 else
     fail "install: pack.yaml missing from install dir"
@@ -85,10 +85,10 @@ else
     fail "remove: exited $RC; output: $OUT"
 fi
 
-if [ ! -d "$TMPDIR_TEST/.forge/packs/hello-world" ]; then
-    pass "remove: .forge/packs/hello-world/ deleted"
+if [ ! -d "$TMPDIR_TEST/packs/hello-world" ]; then
+    pass "remove: packs/hello-world/ deleted"
 else
-    fail "remove: .forge/packs/hello-world/ still exists"
+    fail "remove: packs/hello-world/ still exists"
 fi
 
 # ── list empty again ─────────────────────────────────────────────────────────

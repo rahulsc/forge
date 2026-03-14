@@ -10,7 +10,7 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin"
 export PATH="$FORGE_BIN:$PATH"
 
 TMPDIR=$(mktemp -d /tmp/forge-override-XXXXXX)
@@ -21,7 +21,7 @@ echo "=== test-override: classify-risk --override records state ==="
 echo ""
 
 if ! command -v classify-risk &>/dev/null; then
-    fail "classify-risk not found — expected at .forge/bin/classify-risk"
+    fail "classify-risk not found — expected at bin/classify-risk"
     echo ""
     echo "============================================"
     echo "Results: $PASS passed, $FAIL failed"
@@ -30,9 +30,9 @@ if ! command -v classify-risk &>/dev/null; then
 fi
 
 # Bootstrap .forge/
-mkdir -p "$TMPDIR/.forge/policies"
+mkdir -p "$TMPDIR/policies"
 mkdir -p "$TMPDIR/.forge/local"
-cat > "$TMPDIR/.forge/policies/default.yaml" <<'YAML'
+cat > "$TMPDIR/policies/default.yaml" <<'YAML'
 rules:
   - match: "docs/**"
     tier: minimal

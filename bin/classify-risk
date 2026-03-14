@@ -67,7 +67,7 @@ if [ -z "$PROJECT_DIR" ]; then
     PROJECT_DIR="${FORGE_PROJECT_DIR:-$(pwd)}"
 fi
 
-# Add .forge/bin to PATH so we can call forge-state
+# Add bin/ to PATH so we can call forge-state
 FORGE_BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$FORGE_BIN_DIR:$PATH"
 
@@ -329,7 +329,7 @@ fi
 # Load and parse all policy files
 # ---------------------------------------------------------------------------
 
-POLICY_DIR="$PROJECT_DIR/.forge/policies"
+POLICY_DIR="$PROJECT_DIR/policies"
 ALL_RULES=()  # Array of "tier|require_csv|pattern|policy_name"
 PARSE_ERROR=0
 

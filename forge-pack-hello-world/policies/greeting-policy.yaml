@@ -1,7 +1,7 @@
 # greeting-policy.yaml — Forge pack policy for hello-world
 #
 # Defines risk classification rules for greeting-related files.
-# This policy is merged into .forge/policies/ on install,
+# This policy is merged into policies/ on install,
 # with each rule annotated: source: pack/hello-world
 
 rules:

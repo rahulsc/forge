@@ -48,7 +48,7 @@ When intent is ambiguous, route to `forge:brainstorming` — it will clarify.
 After intent detection, run risk classification to determine ceremony level:
 
 ```
-classify-risk <files> --scope <N>  # reads .forge/policies/
+classify-risk <files> --scope <N>  # reads policies/
 ```
 
 | Tier | Pipeline |
@@ -58,7 +58,7 @@ classify-risk <files> --scope <N>  # reads .forge/policies/
 | elevated | brainstorming → `forge:writing-plans` (with design) → implement → `forge:verification-before-completion` → `forge:requesting-code-review` |
 | critical | brainstorming → `forge:writing-plans` (with design + risk register) → implement → `forge:verification-before-completion` → `forge:requesting-code-review` |
 
-Risk classification reads `.forge/policies/` and returns a tier. The tier determines which steps are skippable. At `minimal`, you may skip the design doc. At `critical`, nothing is skippable.
+Risk classification reads `policies/` and returns a tier. The tier determines which steps are skippable. At `minimal`, you may skip the design doc. At `critical`, nothing is skippable.
 
 
 ## Forge Skill Inventory
@@ -119,7 +119,7 @@ forge-routing (this skill)
     │       ├─ diagnose          → forge:diagnosing-forge
     │       └─ sync              → forge:syncing-forge
     │
-    ├─ Classify risk (reads .forge/policies/)
+    ├─ Classify risk (reads policies/)
     │       │
     │       └─ tier → choose pipeline depth
     │

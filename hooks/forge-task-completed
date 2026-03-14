@@ -15,7 +15,7 @@ TASK_ID="${FORGE_TASK_ID:-}"
 TASK_FILES="${FORGE_TASK_FILES:-}"
 
 # Locate forge bins
-FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../.forge/bin" 2>/dev/null && pwd)" || FORGE_BIN=""
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../bin" 2>/dev/null && pwd)" || FORGE_BIN=""
 if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-state" ]; then
     export PATH="$FORGE_BIN:$PATH"
 fi
@@ -27,7 +27,7 @@ if [ ! -d "$PROJECT_DIR/.forge" ]; then
 fi
 
 # --- Locate policy file ---
-POLICY_FILE="$PROJECT_DIR/.forge/policies/default.yaml"
+POLICY_FILE="$PROJECT_DIR/policies/default.yaml"
 
 # --- Match files to tier/required artifacts ---
 # Returns "tier:artifact1,artifact2,..." for the highest-tier match

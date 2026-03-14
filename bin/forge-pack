@@ -7,8 +7,8 @@
 set -euo pipefail
 
 FORGE_DIR=".forge"
-PACKS_DIR="$FORGE_DIR/packs"
-POLICIES_DIR="$FORGE_DIR/policies"
+PACKS_DIR="packs"
+POLICIES_DIR="policies"
 PROJECT_YAML="$FORGE_DIR/project.yaml"
 
 # ── helpers ────────────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ cmd_remove() {
     [ -n "$name" ] || die "Usage: forge-pack remove <name>"
 
     local install_dir="$PACKS_DIR/$name"
-    [ -d "$install_dir" ] || die "Pack '$name' is not installed (.forge/packs/$name/ not found)"
+    [ -d "$install_dir" ] || die "Pack '$name' is not installed (packs/$name/ not found)"
 
     _remove_pack "$name"
     echo "Done. Pack '$name' removed."

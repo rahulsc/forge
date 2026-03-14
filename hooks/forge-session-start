@@ -44,7 +44,7 @@ TEST_CMD=$(grep -m1 '^\s*test:' "$PROJECT_YAML" 2>/dev/null | sed 's/.*test:[[:s
 LINT_CMD=$(grep -m1 '^\s*lint:' "$PROJECT_YAML" 2>/dev/null | sed 's/.*lint:[[:space:]]*//' || true)
 
 # --- Read current Forge state (best-effort) ---
-FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../.forge/bin" 2>/dev/null && pwd)" || FORGE_BIN=""
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/../bin" 2>/dev/null && pwd)" || FORGE_BIN=""
 ACTIVE_TASK=""
 if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-state" ]; then
     ACTIVE_TASK=$("$FORGE_BIN/forge-state" get "active.task" --project-dir "$PROJECT_DIR" 2>/dev/null || true)
@@ -74,7 +74,7 @@ fi
 CONTEXT="${CONTEXT}
 
 Forge enforces lifecycle gates (design → plan → TDD → implementation → verification → review).
-Use forge-gate, forge-state, forge-evidence, and forge-memory tools from .forge/bin/.
+Use forge-gate, forge-state, forge-evidence, and forge-memory tools from bin/.
 Risk tiers (minimal/standard/elevated/critical) determine required artifacts per file path."
 
 # --- JSON-escape the context ---

@@ -109,7 +109,7 @@ Files to create (new):
 
 For **full adoption**, additionally:
 ```
-  .forge/policies/default.yaml   — risk tier rules for detected paths
+  policies/default.yaml           — risk tier rules for detected paths
   hooks registered in hooks.json via forge-routing
 ```
 
@@ -134,7 +134,7 @@ Create files in this order:
    ```
    Omit any field not detected with at least medium confidence.
 
-2. **`.forge/policies/default.yaml`** (full adoption only) — generate rules from detected risk areas:
+2. **`policies/default.yaml`** (full adoption only) — generate rules from detected risk areas:
    ```yaml
    rules:
      - match: "auth/**"
@@ -180,7 +180,7 @@ Forge adoption complete for <repo-name>.
 
 Created:
   ✓ .forge/project.yaml
-  ✓ .forge/policies/default.yaml   (if full adoption)
+  ✓ policies/default.yaml         (if full adoption)
   ✓ CLAUDE.md (appended / created)
   ✓ AGENTS.md
 

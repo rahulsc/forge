@@ -10,7 +10,7 @@ FAIL=0
 pass() { echo "  PASS: $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL: $1"; FAIL=$((FAIL + 1)); }
 
-FORGE_BIN="/home/rahulsc/Projects/Superpowers/.claude/worktrees/forge-v0/.forge/bin"
+FORGE_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/bin"
 
 echo "=== test-backend-detection: auto-detection and fallback ==="
 echo ""
@@ -22,7 +22,7 @@ if ! command -v forge-state &>/dev/null 2>&1; then
 fi
 
 if ! command -v forge-state &>/dev/null; then
-    fail "forge-state not found — expected at .forge/bin/forge-state"
+    fail "forge-state not found — expected at bin/forge-state"
     echo ""
     echo "============================================"
     echo "Results: $PASS passed, $FAIL failed"
