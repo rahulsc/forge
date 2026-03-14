@@ -7,7 +7,25 @@ description: Use when setting up Forge in an existing repository for the first t
 
 **Announce at start:** "I'm using the adopting-forge skill to set up Forge in this repository."
 
-Forge adoption has six steps. Do not skip steps. Do not create files before Step 5.
+Forge adoption has seven steps (Step 0 through Step 6). Do not skip steps. Do not create files before Step 5.
+
+
+## Step 0 — LLM Exposure Warning
+
+Before scanning the repository, display this notice:
+
+> **Forge Adoption Notice**
+>
+> Forge will scan your project to detect your tech stack, commands, and risk areas. Project contents will be sent to your LLM provider for analysis.
+>
+> Before proceeding:
+> - Review .gitignore to ensure sensitive files are excluded
+> - Forge will flag likely-sensitive files (.env, credentials, keys) and exclude them where possible
+> - No files are modified until you approve the preview
+>
+> Continue? (y/n)
+
+User must acknowledge before scanning proceeds. If they decline, stop and explain how to prepare their repo.
 
 
 ## Step 1 — Inspect Repository
@@ -45,7 +63,34 @@ Scan the repo at file and directory level (no AST analysis):
 - `CLAUDE.md` (Claude Code), `.cursor/` (Cursor), `AGENTS.md` (Codex)
 - Existing `.forge/` → re-adoption path (see below)
 
-Collect: stack, version manager, test command, lint command, build command, risk areas, existing AI surfaces.
+### Sensitive File Detection
+
+During repo scanning, detect and flag files matching these patterns:
+
+| Pattern | Action |
+|---------|--------|
+| `.env`, `.env.*` | Exclude from LLM context; warn user |
+| `credentials.*`, `secrets.*` | Exclude; warn |
+| `*.pem`, `*.key`, `*.p12` | Exclude; warn |
+| `.ssh/`, `.gnupg/` | Exclude; warn |
+| `**/private_key*` | Exclude; warn |
+| `**/password*`, `**/token*` | Flag for review (may be code, not actual secrets) |
+
+Report excluded files to the user: "These files were excluded from analysis: [list]"
+Add matched patterns to the generated risk policy as `critical` tier.
+
+### Stack Inference
+
+| Signal | Detection Method | project.yaml Field |
+|--------|-----------------|-------------------|
+| Package manager | `package.json` → npm/yarn/pnpm; `pyproject.toml`/`requirements.txt` → pip/poetry/uv; `Cargo.toml` → cargo; `go.mod` → go | `stack.package_manager` |
+| Test runner | package.json `scripts.test`; Makefile `test` target; CI config | `commands.test` |
+| Linter | `.eslintrc*` → eslint; `ruff.toml` → ruff; `.golangci.yml` → golangci-lint | `commands.lint` |
+| Language/stack | File extensions, manifest files | `stack.languages` |
+| CI surface | `.github/workflows/` → GitHub Actions; `.gitlab-ci.yml` → GitLab CI | `stack.ci` |
+| Critical paths | `db/migrations/`, `auth/`, `**/secrets*`, `**/payments*` | Auto-add to policies as elevated/critical |
+
+Collect: stack, version manager, test command, lint command, build command, risk areas, sensitive files, existing AI surfaces.
 
 
 ## Step 2 — Propose Configuration
@@ -151,11 +196,78 @@ Create files in this order:
        require: [verification]
    ```
 
-3. **`CLAUDE.md`** — detect existing content:
-   - If `CLAUDE.md` exists: append Forge section below existing content (template in `references/generated-claude-md-template.md`)
-   - If `CLAUDE.md` does not exist: create from template
+3. **`CLAUDE.md`** — generate using managed block strategy (template in `references/generated-claude-md-template.md`):
 
-4. **`AGENTS.md`** — create multi-platform adapter for Codex compatibility (see template in `references/generated-claude-md-template.md`)
+   **If CLAUDE.md exists:**
+   1. Read existing content
+   2. Check for existing `<!-- forge:begin -->` markers
+   3. If markers exist: replace content between them
+   4. If no markers: append the Forge block at the end
+   5. Never modify content outside the markers
+
+   **If CLAUDE.md does not exist:**
+   1. Create with the Forge block only
+
+   **Generated block format:**
+   ```
+   <!-- forge:begin — DO NOT EDIT THIS BLOCK. Run `forge sync` to regenerate. -->
+
+   ## Forge
+
+   This project uses [Forge](https://github.com/rahulsc/forge) for structured AI-assisted development.
+
+   ### Project
+   - **Name:** {project_name}
+   - **Stack:** {languages}, {frameworks}
+   - **Package manager:** {package_manager}
+
+   ### Commands
+   - **Test:** `{test_command}`
+   - **Lint:** `{lint_command}`
+
+   ### Risk Policy
+   High-risk paths requiring elevated review:
+   {critical_paths_list}
+
+   ### Workflow
+   Forge enforces: design → plan → TDD → implement → verify → review.
+
+   <!-- forge:end -->
+   ```
+
+4. **`AGENTS.md`** — generate using managed block strategy (same pattern as CLAUDE.md):
+
+   **If AGENTS.md exists:**
+   1. Read existing content
+   2. Check for existing `<!-- forge:begin -->` markers
+   3. If markers exist: replace content between them
+   4. If no markers: append the Forge block at the end
+   5. Never modify content outside the markers
+
+   **If AGENTS.md does not exist:**
+   1. Create with the Forge block only
+
+   **Generated block format:**
+   ```
+   <!-- forge:begin — DO NOT EDIT THIS BLOCK. Run `forge sync` to regenerate. -->
+
+   ## Forge Agents
+
+   | Agent | Role | When Used |
+   |-------|------|-----------|
+   | architect | System design, API design | Architecture decisions |
+   | implementer | Feature implementation | Writing code following TDD |
+   | qa-engineer | Test design, coverage | Pipelined TDD, test quality |
+   | code-reviewer | Code quality review | Post-implementation review |
+   | security-reviewer | Vulnerability assessment | Critical-tier security audit |
+   | forge-author | Skill/agent authoring | Writing and editing Forge skills |
+   | frontend-engineer | UI development | Frontend tasks, accessibility |
+   | backend-engineer | API development | Backend tasks, data access |
+   | database-specialist | Schema, migrations | Database changes, migration review |
+   | devops-engineer | CI/CD, infrastructure | Deployment, pipeline review |
+
+   <!-- forge:end -->
+   ```
 
 5. **`.forge/local/.gitignore`** — `*` (gitignore all local state)
 

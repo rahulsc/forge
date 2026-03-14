@@ -1,33 +1,43 @@
 # Generated File Templates
 
 Templates used by `adopting-forge` when creating or appending AI surface files.
+All generated content uses **managed blocks** (`<!-- forge:begin/end -->`) so that
+`forge sync` can regenerate without touching user-written content.
 
 
-## CLAUDE.md — Forge Section (append to existing)
+## CLAUDE.md — Forge Managed Block
 
-When `CLAUDE.md` already exists, append the following section at the end.
-Never modify or remove existing content.
+When `CLAUDE.md` already exists, find `<!-- forge:begin -->` / `<!-- forge:end -->`
+markers and replace the content between them. If no markers exist, append the block
+at the end. Never modify or remove content outside the markers.
+
+When no `CLAUDE.md` exists, create a new file containing only this block.
 
 ~~~markdown
+<!-- forge:begin — DO NOT EDIT THIS BLOCK. Run `forge sync` to regenerate. -->
 
----
+## Forge
 
-## Forge Configuration
+This project uses [Forge](https://github.com/rahulsc/forge) for structured AI-assisted development.
 
-This repository uses **Forge** for structured AI-assisted development.
+### Project
+- **Name:** <repo-name>
+- **Stack:** <stack>
+- **Package manager:** <package-manager>
+
+### Commands
+- **Test:** `<test-cmd>`
+- **Lint:** `<lint-cmd>`
+
+### Risk Policy
+High-risk paths requiring elevated review:
+- `auth/**` — critical
+- `db/migrations/**` — critical
+- `src/**` — standard
+- `docs/**` — minimal
 
 ### Workflow
-
-Always invoke `forge-routing` at the start of any task. Forge will detect intent,
-classify risk, and route to the correct skill.
-
-### Risk Tiers
-
-File paths in this repo are classified by risk tier (see `policies/`):
-- **critical** — auth, migrations, payments: requires design doc, plan, TDD, security review
-- **elevated** — public API, admin: requires plan, TDD, evidence, review
-- **standard** — application code: requires plan, test evidence, verification
-- **minimal** — docs, config: requires verification only
+Forge enforces: design → plan → TDD → implement → verify → review.
 
 ### State and Evidence
 
@@ -40,108 +50,40 @@ forge-gate check <gate-name>       # check lifecycle gate
 
 ### Tools Location
 
-Forge tools live in `bin/`. Add to PATH or call directly:
-
 ```bash
 export PATH=".forge/bin:$PATH"
 ```
+
+<!-- forge:end -->
 ~~~
 
 
-## CLAUDE.md — Full File (when no CLAUDE.md exists)
+## AGENTS.md — Forge Managed Block
+
+Same managed-block strategy as CLAUDE.md. When `AGENTS.md` exists, replace content
+between markers (or append if no markers). When it does not exist, create with this block.
 
 ~~~markdown
-# Project: <repo-name>
+<!-- forge:begin — DO NOT EDIT THIS BLOCK. Run `forge sync` to regenerate. -->
 
-## Stack
+## Forge Agents
 
-- Language: <stack>
-- Test: `<test-cmd>`
-- Lint: `<lint-cmd>`
+| Agent | Role | When Used |
+|-------|------|-----------|
+| architect | System design, API design | Architecture decisions |
+| implementer | Feature implementation | Writing code following TDD |
+| qa-engineer | Test design, coverage | Pipelined TDD, test quality |
+| code-reviewer | Code quality review | Post-implementation review |
+| security-reviewer | Vulnerability assessment | Critical-tier security audit |
+| forge-author | Skill/agent authoring | Writing and editing Forge skills |
+| frontend-engineer | UI development | Frontend tasks, accessibility |
+| backend-engineer | API development | Backend tasks, data access |
+| database-specialist | Schema, migrations | Database changes, migration review |
+| devops-engineer | CI/CD, infrastructure | Deployment, pipeline review |
 
----
-
-## Forge Configuration
-
-This repository uses **Forge** for structured AI-assisted development.
-
-### Workflow
-
-Always invoke `forge-routing` at the start of any task. Forge will detect intent,
-classify risk, and route to the correct skill.
-
-### Risk Tiers
-
-File paths in this repo are classified by risk tier (see `policies/`):
-- **critical** — requires design doc, plan, TDD, security review
-- **elevated** — requires plan, TDD, evidence, review
-- **standard** — requires plan, test evidence, verification
-- **minimal** — requires verification only
-
-### State and Evidence
-
-```bash
-forge-state get <key>
-forge-state set <key> <value>
-forge-evidence add <task-id> <artifact>
-forge-gate check <gate-name>
-```
-
-### Tools Location
-
-```bash
-export PATH=".forge/bin:$PATH"
-```
+<!-- forge:end -->
 ~~~
 
-
-## AGENTS.md — Codex Multi-Platform Adapter
-
-Create `AGENTS.md` at repo root for OpenAI Codex and other agent platforms.
-
-~~~markdown
-# Agent Instructions: <repo-name>
-
-This repository uses **Forge** for structured AI development workflows.
-
-## Stack
-
-- Language: <stack>
-- Test command: `<test-cmd>`
-- Lint command: `<lint-cmd>`
-
-## Workflow
-
-Before starting any task:
-1. Read `.forge/project.yaml` for project configuration
-2. Read `policies/default.yaml` for risk tier rules
-3. Follow the risk tier for the files you will touch
-
-## Risk Tiers
-
-| Path pattern | Tier | Required artifacts |
-|-------------|------|-------------------|
-| `auth/**` | critical | design-doc, plan, tdd, security-review |
-| `db/migrations/**` | critical | design-doc, risk-register, plan, tdd, rollback-evidence |
-| `src/**` | standard | plan, test-evidence, verification |
-| `docs/**` | minimal | verification |
-
-## Evidence
-
-Record evidence for each task:
-
-```bash
-bin/forge-evidence add <task-id> <artifact>
-bin/forge-evidence list <task-id>
-```
-
-## State
-
-```bash
-bin/forge-state get <key>
-bin/forge-state set <key> <value>
-```
-~~~
 
 ## Substitution Variables
 
@@ -151,6 +93,7 @@ When generating from these templates, replace:
 |-------------|--------|
 | `<repo-name>` | directory name of repo root |
 | `<stack>` | detected from stack-detection heuristics |
+| `<package-manager>` | detected package manager (npm, yarn, pip, cargo, etc.) |
 | `<test-cmd>` | detected test command |
 | `<lint-cmd>` | detected lint command |
 
