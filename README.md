@@ -1,93 +1,208 @@
-# Forge (working title)
+# Forge
 
-Forge is a structured operating mode for AI-assisted software development --
-an independent evolution of [Superpowers](https://github.com/obra/superpowers)
-by Jesse Vincent.
+Forge is a structured operating mode for AI-assisted software development.
+It gives coding agents risk-scaled workflows, evidence-gated completion, and
+durable project memory -- so the right amount of ceremony happens for each
+task, every claim of completion is backed by evidence, and project context
+survives across sessions.
 
-## What is Forge?
+## Why Forge
 
-Forge gives your coding agent a complete engineering workflow. Instead of
-treating each session as a blank slate, Forge maintains durable project memory
-(`.forge/` infrastructure with SQLite or JSON state, shared architecture docs,
-and cross-session decision records) so your agent always has context about what
-was built, why, and what comes next.
+| Capability | Forge | Superpowers | Spec Kit | Claude Code | Codex | Aider | Cline |
+|-----------|:-----:|:-----------:|:--------:|:-----------:|:-----:|:-----:|:-----:|
+| Brownfield adoption | Yes | Partial | Partial | No | Partial | Yes | Partial |
+| Outcome-first workflows | Yes | Partial | Yes | No | No | No | No |
+| Risk-scaled ceremony | Yes | -- | -- | No | No | No | No |
+| Evidence-gated completion | Yes | Partial | Partial | No | No | Partial | Partial |
+| Multi-agent teams | Yes | -- | -- | Experimental | -- | No | -- |
+| TDD enforcement | Yes | Prompt-only | -- | -- | -- | Lint/test | -- |
+| Persistent state | Yes | -- | -- | Limited | Limited | -- | Partial |
 
-Every change passes through a risk classification engine that scales ceremony to
-match stakes. Low-risk documentation edits need a spot-check; database
-migrations require a full test run, security review, and sign-off. Evidence
-gates enforce this -- your agent cannot claim work is complete without producing
-the artifacts the risk tier demands.
+## Quick Start
 
-Forge also supports multi-agent teams: persistent specialist agents (architect,
-implementer, QA engineer, code reviewer, security reviewer) working in parallel
-waves with between-wave verification gates. A pack protocol lets you distribute
-and install reusable bundles of skills, policies, and shared knowledge across
-projects. The result is AI-assisted development that is systematic, auditable,
-and predictable.
+1. **Install** -- add Forge to your coding agent ([installation instructions](#installation))
+2. **Adopt** -- open your project and say: *"Set up Forge in this project"*
+3. **Build** -- say what you want: *"Add a health check endpoint"* -- Forge handles the rest
 
-## How it works
+## The 8 Workflows
 
-It starts from the moment you fire up your coding agent. As soon as it sees
-that you are building something, it does not just jump into writing code.
-Instead, it steps back and asks what you are really trying to do.
+Each workflow maps a developer intent to a pipeline of skills. You just say
+what you want -- Forge routes to the right skills automatically.
 
-Once it has teased a spec out of the conversation through Socratic
-**brainstorming**, it shows it to you in chunks short enough to actually read
-and digest. After you sign off on the design, your agent puts together an
-implementation plan via **writing-plans** -- clear enough for an enthusiastic
-junior engineer with no project context and an aversion to testing to follow.
-It emphasizes true red/green TDD, YAGNI, and DRY.
+### Adopt a Repo
 
-Next up, once you say "go", it launches **subagent-driven-development** (or
-**agent-team-driven-development** for larger efforts), having agents work
-through each task, inspecting and reviewing their work, and continuing forward.
-Evidence-gated **verification-before-completion** ensures nothing is declared
-done until the proof exists. It is not uncommon for your agent to work
-autonomously for a couple of hours at a time without deviating from the plan
-you put together.
+> *"Set up Forge in this project"*
 
-Because the skills trigger automatically through **forge-routing**, you do not
-need to do anything special. Your coding agent just has Forge.
+| | |
+|---|---|
+| **What Forge does** | `forge:adopting-forge` --> `forge:syncing-forge` |
+| **What you get** | `.forge/` directory with project config, risk policies, platform adapters |
+| **Verification** | Adapters generated, project.yaml populated, policies in place |
+
+### Start a Feature
+
+> *"Add a health check endpoint that returns build version and uptime"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:brainstorming` --> `forge:setting-up-project` --> `forge:writing-plans` --> execution --> `forge:verification-before-completion` --> `forge:requesting-code-review` --> `forge:finishing-a-development-branch` |
+| **What you get** | Tested, reviewed feature on a clean branch ready to merge |
+| **Verification** | Tests pass, evidence artifacts collected, code review complete |
+
+### Fix a Bug
+
+> *"Users are getting 500 errors on the /api/orders endpoint"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:systematic-debugging` --> (optional planning) --> `forge:test-driven-development` --> `forge:verification-before-completion` |
+| **What you get** | Root cause identified, regression test added, fix verified |
+| **Verification** | Failing test reproduced the bug, fix makes it pass, no regressions |
+
+### Refactor Safely
+
+> *"Refactor the payment module to use the strategy pattern"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:brainstorming` --> `forge:writing-plans` --> `forge:test-driven-development` --> `forge:verification-before-completion` --> `forge:requesting-code-review` |
+| **What you get** | Refactored code with identical behavior, full test coverage |
+| **Verification** | All existing tests pass, new tests cover refactored paths, review confirms behavioral equivalence |
+
+### Review a Change
+
+> *"Review PR #42"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:requesting-code-review` or `forge:receiving-code-review` |
+| **What you get** | Structured review with findings categorized by severity |
+| **Verification** | Review checklist completed, issues logged, response plan if receiving |
+
+### Resume Work
+
+> *(start a new session)*
+
+| | |
+|---|---|
+| **What Forge does** | `forge-session-start` hook --> forge-state restoration --> resume at last skill |
+| **What you get** | Seamless continuation from where you left off |
+| **Verification** | State restored, pending tasks visible, next action clear |
+
+### Prepare a Release
+
+> *"Ship it"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:verification-before-completion` --> `forge:finishing-a-development-branch` |
+| **What you get** | Verified branch merged or PR created with full evidence trail |
+| **Verification** | All evidence gates satisfied, branch clean, CI passing |
+
+### Investigate an Incident
+
+> *"Why is the worker queue backing up?"*
+
+| | |
+|---|---|
+| **What Forge does** | `forge:systematic-debugging` |
+| **What you get** | 4-phase root cause analysis with evidence at each step |
+| **Verification** | Hypotheses tested, root cause confirmed with data, fix path identified |
+
+## How It Works
+
+### Skill Flow
+
+Forge ships 21 skills organized into five categories: routing, design,
+execution, verification, and meta. Skills compose into pipelines -- the router
+selects the right entry point, and each skill hands off to the next based on
+workflow phase.
+
+```mermaid
+graph LR
+    classDef design fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    classDef execute fill:#50b050,stroke:#357a35,color:#fff
+    classDef verify fill:#e6a832,stroke:#b8841f,color:#fff
+    classDef debug fill:#d94a4a,stroke:#8a2c2c,color:#fff
+    classDef meta fill:#9b59b6,stroke:#6c3483,color:#fff
+
+    subgraph Design
+        brainstorm[Brainstorming] --> setup[Setting Up Project] --> plans[Writing Plans]
+    end
+
+    subgraph Execute
+        plans --> tdd[Test-Driven Dev]
+        plans --> subagent[Subagent-Driven Dev]
+        plans --> team[Agent-Team Dev]
+        subagent --> wave[Wave Validation]
+        team --> wave
+    end
+
+    subgraph Verify
+        tdd --> verify[Verification]
+        wave --> verify
+        verify --> review[Code Review]
+        review --> finish[Finish Branch]
+    end
+
+    subgraph Debug
+        debug_skill[Systematic Debugging] --> tdd
+    end
+
+    subgraph Meta
+        routing[Forge Routing] --> brainstorm
+        routing --> debug_skill
+        adopt[Adopting Forge] --> sync[Syncing Forge]
+    end
+
+    class brainstorm,setup,plans design
+    class tdd,subagent,team,wave execute
+    class verify,review,finish verify
+    class debug_skill debug
+    class routing,adopt,sync meta
+```
+
+### Risk-Scaled Ceremony
+
+Every change is classified into a risk tier. Higher tiers require more evidence
+before completion is allowed.
+
+| Tier | When | What's Required | Example |
+|------|------|----------------|---------|
+| **minimal** | Low-risk, small changes | Goal + tasks | Fix a typo, update a config |
+| **standard** | Normal development | + test expectations + plan approval | Add a new API endpoint |
+| **elevated** | Important or cross-cutting | + design doc + wave analysis | Refactor auth system |
+| **critical** | High-stakes or irreversible | + risk register + rollback plan + security review | Database migration, payment flow |
+
+Risk tiers are defined in `policies/default.yaml` and matched by file glob
+patterns. First matching rule wins.
 
 ## Installation
 
-**Note:** Installation differs by platform. Claude Code and Cursor have
-built-in plugin marketplaces. Codex, OpenCode, and Gemini CLI require manual
-setup.
-
-### Claude Code Official Marketplace
-
-Install the plugin from the Claude marketplace:
+<details>
+<summary><strong>Claude Code</strong></summary>
 
 ```bash
-/plugin install forge@claude-plugins-official
+claude plugin add --url https://github.com/rahulsc/forge
 ```
 
-### Claude Code (via Plugin Marketplace)
+</details>
 
-In Claude Code, register the marketplace first:
+<details>
+<summary><strong>Cursor</strong></summary>
 
-```bash
-/plugin marketplace add rahulsc/forge-marketplace
-```
-
-Then install the plugin from this marketplace:
-
-```bash
-/plugin install forge@forge-marketplace
-```
-
-### Cursor (via Plugin Marketplace)
-
-In Cursor Agent chat, install from marketplace:
+In Cursor Agent chat:
 
 ```text
 /add-plugin forge
 ```
 
-or search for "forge" in the plugin marketplace.
+Or search for "forge" in the plugin marketplace.
 
-### Codex
+</details>
+
+<details>
+<summary><strong>Codex</strong></summary>
 
 Tell Codex:
 
@@ -95,9 +210,12 @@ Tell Codex:
 Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/forge/refs/heads/main/.codex/INSTALL.md
 ```
 
-**Detailed docs:** [docs/README.codex.md](docs/README.codex.md)
+See [docs/README.codex.md](docs/README.codex.md) for detailed setup.
 
-### OpenCode
+</details>
+
+<details>
+<summary><strong>OpenCode</strong></summary>
 
 Tell OpenCode:
 
@@ -105,9 +223,12 @@ Tell OpenCode:
 Fetch and follow instructions from https://raw.githubusercontent.com/rahulsc/forge/refs/heads/main/.opencode/INSTALL.md
 ```
 
-**Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
+See [docs/README.opencode.md](docs/README.opencode.md) for detailed setup.
 
-### Gemini CLI
+</details>
+
+<details>
+<summary><strong>Gemini CLI</strong></summary>
 
 ```bash
 gemini extensions install https://github.com/rahulsc/forge
@@ -119,133 +240,177 @@ To update:
 gemini extensions update forge
 ```
 
-### Verify Installation
+</details>
 
-Start a new session in your chosen platform and ask for something that should
-trigger a skill (for example, "help me plan this feature" or "let's debug this
-issue"). The agent should automatically invoke the relevant Forge skill.
+## Verify Installation
 
-## Skills Library (21 skills)
+Start a session and try a prompt that should trigger a skill:
 
-**Routing**
-- **forge-routing** -- Determines workflow phase before any action
+| Platform | Test prompt | Expected behavior |
+|----------|-----------|------------------|
+| Claude Code | *"Help me plan this feature"* | `forge:brainstorming` activates |
+| Cursor | *"Let's debug this issue"* | `forge:systematic-debugging` activates |
+| Codex | *"Set up Forge here"* | `forge:adopting-forge` activates |
+| OpenCode | *"Add a new endpoint"* | `forge:brainstorming` activates |
+| Gemini CLI | *"Review this PR"* | `forge:requesting-code-review` activates |
 
-**Adoption & Setup**
-- **adopting-forge** -- First-time Forge setup in a repository
-- **setting-up-project** -- Bridges design approval to execution strategy
-- **syncing-forge** -- Regenerate adapters after config changes
-- **diagnosing-forge** -- Health checks for .forge/ state
+If skills do not activate, run `forge:diagnosing-forge` to check your setup.
 
-**Design & Planning**
-- **brainstorming** -- Socratic design refinement
-- **writing-plans** -- Detailed implementation plans
-- **composing-teams** -- Assemble specialist agent teams
+## Getting Started
 
-**Execution**
-- **subagent-driven-development** -- Fresh subagent per task with two-stage review
-- **agent-team-driven-development** -- Persistent specialists in parallel waves
-- **test-driven-development** -- RED-GREEN-REFACTOR cycle
-- **using-git-worktrees** -- Isolated development workspaces
-- **validating-wave-compliance** -- Between-wave verification gates
+Here is what your first ten minutes with Forge look like.
 
-**Debugging**
-- **systematic-debugging** -- 4-phase root cause analysis
+**Step 1 -- Install Forge** using the [instructions above](#installation).
 
-**Review & Completion**
-- **requesting-code-review** -- Pre-review checklist
-- **receiving-code-review** -- Responding to feedback with rigor
-- **verification-before-completion** -- Evidence-gated completion claims
-- **finishing-a-development-branch** -- Merge/PR decision workflow
+**Step 2 -- Open your project.** `cd` into any existing repository.
 
-**Meta & Extensibility**
-- **writing-skills** -- Create new skills following TDD methodology
-- **forge-packs** -- Install and manage reusable skill/policy bundles
-- **forge-viz** -- Browser dashboard for workflow visualization
+**Step 3 -- Adopt Forge.**
 
-## Forge Infrastructure
+Say: *"Set up Forge in this project"*
 
-Forge stores project configuration and runtime state in the `.forge/` directory
-at the root of your repository.
+Forge runs `adopting-forge`, which scans your repo, creates `.forge/project.yaml`
+with your tech stack and build commands, generates risk policies in
+`policies/default.yaml`, and writes platform adapters. You will see a summary
+of what was configured.
 
-**Configuration**
-- `project.yaml` -- Project name, tech stack, build/test/lint commands, repo
-  traits, and storage backend preference.
-- `policies/default.yaml` -- Risk classification rules mapping file patterns to
-  tiers (minimal, standard, elevated, critical) with required artifacts per tier.
+**Step 4 -- Build something.**
 
-**Runtime tools** (`bin/`)
-- `classify-risk` -- Determines the risk tier for a set of changed files.
-- `forge-evidence` -- Records and queries evidence artifacts (test runs, reviews,
-  sign-offs) required by risk policies.
-- `forge-memory` -- Cross-session memory store for project context.
-- `forge-state` -- Persistent state backend (SQLite or JSON) for workflow
-  progress, task status, and evidence collection.
-- `forge-pack` -- Installs, removes, and lists packs from local or remote
-  sources.
+Say: *"Add a health check endpoint that returns build version and uptime"*
 
-**Shared knowledge** (`.forge/shared/`)
-- `architecture.md` -- Project architecture overview, kept current by agents.
-- `conventions.md` -- Coding conventions and style decisions.
-- `decisions/` -- Architectural decision records (ADR format).
+Watch the pipeline in action:
+- **Brainstorming** -- Forge asks clarifying questions: JSON or plain text?
+  Include dependency status? Authentication required?
+- **Planning** -- After you approve the design, Forge writes an implementation
+  plan with test expectations and task breakdown.
+- **Execution** -- Forge classifies the change (likely `standard` tier), writes
+  tests first (TDD), implements the endpoint, and collects evidence.
+- **Verification** -- Tests pass, evidence recorded, code review checklist
+  completed.
 
-**Extensibility**
-- `packs/` -- Installed pack bundles (skills, policies, shared knowledge).
-- `adapters/` -- Platform-specific adapter files generated by `syncing-forge`.
-- `workflows/` -- Multi-step workflow definitions (declarative YAML schema for
-  sequencing skills with dependency tracking and failure handling).
-- `local/` -- Machine-local state (gitignored).
+**Step 5 -- Observe the system.** Notice that Forge selected the risk tier
+automatically, required tests before implementation, and collected evidence at
+each stage. For a documentation change it would require almost nothing. For a
+database migration it would require a security review and rollback plan.
 
-## Agent Definitions
+## Infrastructure
 
-Forge ships five specialist agent definitions (in `agents/`) for use with
-multi-agent team workflows:
+Forge separates product artifacts (shipped with the plugin) from per-project
+configuration (created when you adopt Forge in a repository).
 
-- **architect** -- Owns design coherence, API boundaries, and system-level
-  trade-offs.
-- **implementer** -- Writes production code following TDD, guided by the plan.
-- **qa-engineer** -- Writes tests one wave ahead of implementers, validates
-  coverage.
-- **code-reviewer** -- Reviews implementation against spec, plan, and project
-  conventions.
-- **security-reviewer** -- Audits changes for vulnerabilities, auth gaps, and
-  data exposure.
+### Product artifacts
+
+These live at the top level of the Forge repository:
+
+| Directory | Purpose |
+|-----------|---------|
+| `bin/` | Runtime tools: `classify-risk`, `forge-evidence`, `forge-memory`, `forge-state`, `forge-pack` |
+| `policies/` | Risk classification rules (`default.yaml`) |
+| `skills/` | The 21 skills that define Forge workflows |
+| `agents/` | Specialist agent definitions for multi-agent teams |
+| `hooks/` | Session lifecycle hooks (e.g., `forge-session-start`) |
+| `workflows/` | Multi-step workflow definitions (declarative YAML) |
+| `packs/` | Installed pack bundles |
+| `templates/` | Scaffolding templates for new projects |
+| `adapters/` | Platform-specific adapter files |
+
+### Per-project configuration
+
+The `.forge/` directory is created when you adopt Forge in a repository. It
+contains:
+
+- `project.yaml` -- project name, tech stack, build/test/lint commands, repo
+  traits
+- `shared/architecture.md` -- project architecture overview, kept current by
+  agents
+- `shared/conventions.md` -- coding conventions and style decisions
+- `shared/decisions/` -- architectural decision records (ADR format)
+- `local/` -- machine-local runtime state (gitignored)
+
+## Agent Roster
+
+| Agent | Role | Use Case |
+|-------|------|----------|
+| **architect** | System design, API design, tech debt | Architecture decisions, cross-service consistency |
+| **implementer** | Feature implementation, bug fixes | Writing code following TDD |
+| **qa-engineer** | Test design, coverage analysis | Pipelined TDD, test quality |
+| **code-reviewer** | Code quality, plan compliance | Post-implementation review |
+| **security-reviewer** | Vulnerability assessment, auth review | Critical-tier security audit |
+
+These agents are used by `forge:agent-team-driven-development` and
+`forge:composing-teams` for parallel wave execution with between-wave
+verification gates.
+
+## Extending Forge
+
+### Writing Skills
+
+Use `forge:writing-skills` to create new skills following TDD methodology.
+Each skill is a directory under `skills/` containing a `SKILL.md` file and
+optional supporting files. Skills are activated by `forge:forge-routing` based
+on pattern matching against the user's intent. See
+`skills/writing-skills/SKILL.md` for the complete guide.
+
+### Creating Packs
+
+A pack bundles skills, policies, and shared knowledge into a distributable
+unit. Use `forge:forge-packs` to create, install, and manage packs. Packs
+can be installed from local directories or remote Git repositories. See
+`forge-pack-hello-world/` for a working example.
+
+### Adding Agents
+
+Agent definitions live in `agents/` as Markdown files. Define the agent's
+role, responsibilities, and behavioral constraints. New agents are
+automatically available to `forge:composing-teams` for team assembly in
+multi-agent workflows.
+
+## FAQ
+
+**What if a skill does not activate?**
+Run `forge:diagnosing-forge` to check your setup. It validates `.forge/`
+state, adapter configuration, and hook wiring.
+
+**How do I change the risk tier for a file pattern?**
+Edit `policies/default.yaml`. Rules are evaluated top-to-bottom; first match
+wins. Add a rule above the catch-all to override the default tier for specific
+paths.
+
+**Can I use Forge with a different LLM?**
+Yes. Forge is host-agnostic -- it works through the coding agent's plugin or
+extension system, not through direct API calls. Any agent that can load Forge
+skills can use them.
+
+**How do I skip a workflow step?**
+The risk tier determines which steps are required. Lower the tier for your file
+patterns in `policies/default.yaml` to reduce required ceremony. For one-off
+overrides, tell your agent to use a specific skill directly.
+
+**How do I resume after a crash?**
+The session hook restores state automatically on the next session start. Say
+*"Where was I?"* and Forge will show your pending tasks and last active skill.
+
+**How do I update Forge?**
+Run the update command for your platform (e.g., `/plugin update forge` for
+Claude Code, `gemini extensions update forge` for Gemini CLI). Skills update
+with the plugin.
 
 ## Philosophy
 
-- **Test-Driven Development** -- Write tests first, always
-- **Systematic over ad-hoc** -- Process over guessing
-- **Complexity reduction** -- Simplicity as primary goal
-- **Evidence over claims** -- Verify before declaring success
+- **Test-Driven Development** -- write tests first, always
+- **Evidence over claims** -- verify before declaring success
+- **Systematic over ad-hoc** -- process over guessing
+- **Complexity reduction** -- the right amount of ceremony, no more
 
-## Contributing
+## Attribution
 
-Skills live directly in this repository. To contribute:
-
-1. Fork [rahulsc/forge](https://github.com/rahulsc/forge)
-2. Create a branch for your skill
-3. Follow the `writing-skills` skill for creating and testing new skills
-4. Submit a PR
-
-See `skills/writing-skills/SKILL.md` for the complete guide.
-
-## Updating
-
-Skills update automatically when you update the plugin:
-
-```bash
-/plugin update forge
-```
+Forge is derived from [Superpowers](https://github.com/obra/superpowers),
+originally created by Jesse Vincent. See [ORIGINS.md](ORIGINS.md) for the full
+story and [NOTICE.md](NOTICE.md) for formal attribution.
 
 ## License
 
 MIT License -- see [LICENSE](LICENSE) file for details.
 
-## Attribution
-
-Forge is derived from [Superpowers](https://github.com/obra/superpowers),
-originally created by Jesse Vincent. See [NOTICE.md](NOTICE.md) for formal
-attribution and [ORIGINS.md](ORIGINS.md) for the full story.
-
 ## Support
 
-- **Issues**: https://github.com/rahulsc/forge/issues
+- **Issues:** https://github.com/rahulsc/forge/issues
