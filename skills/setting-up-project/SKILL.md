@@ -93,17 +93,20 @@ Create an isolated worktree based on the risk tier.
 
 | Tier | Worktree |
 |------|----------|
-| minimal | Optional |
-| standard | Recommended |
-| elevated | Required |
+| minimal | Not created (work directly on branch) |
+| standard | Optional (offer, default to no) |
+| elevated | Recommended (offer, default to yes) |
 | critical | Required |
 
 For **Required** tiers: create the worktree now via `forge:using-git-worktrees`. Do not skip.
 
 For **Recommended** tiers: ask the user:
-> "Standard tier projects benefit from an isolated worktree. Create one now? (Recommended)"
+> "Elevated tier projects benefit from an isolated worktree. Create one now? (Recommended — default yes)"
 
-For **Optional** tiers: offer the option, but proceed without if the user declines.
+For **Optional** tiers: ask the user:
+> "Standard tier — a worktree is available if you want isolation. Create one? (default: no)"
+
+For **minimal** tiers: Do not create a worktree. Work directly on the current branch.
 
 After worktree creation, `forge:using-git-worktrees` writes `worktree.main.path` to state. Verify the path is accessible before continuing.
 

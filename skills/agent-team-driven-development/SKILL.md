@@ -319,6 +319,18 @@ digraph agent_team {
    - Same fix loop, same 3-cycle bound
 6. **Mark task complete** via `TaskUpdate`, `forge-state set plan.completed_tasks`, `forge-evidence add <task-id> <artifact>`
 
+**Review tiers by task complexity:**
+
+Tasks in the plan should include a `complexity` field. The lead uses this to decide review depth:
+
+| Task Complexity | Review Approach |
+|----------------|----------------|
+| **Mechanical** (find-replace, config changes, scaffolding) | Single verification check (e.g., grep passes) — no subagent review dispatched |
+| **Standard** (implementation with tests) | Two-stage review: spec compliance then code quality |
+| **Complex** (architecture, cross-cutting, multi-file coordination) | Two-stage review + lead review of the merged result |
+
+When a task has no `complexity` field, default to **standard**.
+
 **Risk-tier-aware review ceremony:** Scale review depth to the project's risk tier (from `forge-state get risk.tier`):
 - **Minimal tier:** Light review — single combined spec+quality pass per task
 - **Standard tier:** Standard two-stage review (spec compliance then code quality)
