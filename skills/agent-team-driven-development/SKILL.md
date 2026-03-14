@@ -121,7 +121,7 @@ Then point the implementer at the worktree path.
 1. Each implementer gets their own worktree (automatically via `isolation: "worktree"` in Claude Code, or manually created on other platforms)
 2. Implementers commit to their worktree's branch
 3. Lead records each implementer's worktree via `forge-state set worktree.implementers.<name>.*`
-4. After each wave's reviews pass, lead merges implementer branches into main worktree
+4. After each wave's reviews pass, lead squash-merges implementer branches into main worktree (see merge strategy below)
 5. Before starting next wave, lead verifies merge is clean and all tests pass
 6. Next wave's implementers branch from the clean merged state
 
@@ -130,6 +130,17 @@ Then point the implementer at the worktree path.
 - Lead runs tests on merged result to verify integration
 - Message existing implementers with next wave's tasks + context from previous waves
 - If a wave needs a different specialty, shut down the unneeded implementer and spawn a new specialist
+
+**Merge strategy — squash by default:**
+```bash
+# Default: squash all working commits into one clean commit per task
+git merge --squash <implementer-branch>
+git commit -m "<task commit message from plan>"
+```
+
+Squash-on-merge means each task produces exactly one commit on main, regardless of how many working commits the implementer made in their worktree. The commit message comes from the task spec in the plan.
+
+**When NOT to squash:** If a task genuinely has multiple distinct logical changes (e.g., a migration + a schema change + an API update), the lead may use regular `git merge` instead. But squash is the default — opt out only when each sub-commit tells a useful story on its own.
 
 **Merge conflict resolution:** Lead resolves directly or directs the relevant implementer. Never ask another implementer to fix a peer's conflict.
 
@@ -190,7 +201,7 @@ digraph agent_team {
         task_complete [label="Mark task complete\nforge-state set + forge-evidence add"];
     }
 
-    merge [label="Between Waves:\nMerge worktree branches,\nverify integration\nforge-state set + forge-evidence add"];
+    merge [label="Between Waves:\nSquash-merge worktree branches,\nverify integration\nforge-state set + forge-evidence add"];
     context_check [label="Context < 50%?" shape=diamond];
     compact [label="/compact"];
     wave_check [label="More waves?" shape=diamond];
