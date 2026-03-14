@@ -85,16 +85,27 @@ No configuration drift detected. project.yaml is current.
 And continue to Step 6 (pack check) and Step 7 (cache refresh).
 
 
-## Step 4 — Regenerate CLAUDE.md
+## Step 4 — Regenerate CLAUDE.md Managed Block
 
-Read existing `CLAUDE.md`. Locate the Forge section (bounded by `<!-- forge:start -->` and `<!-- forge:end -->` markers, or the section headed `## Forge`).
+Read existing `CLAUDE.md`. Locate the managed block bounded by `<!-- forge:begin -->` and `<!-- forge:end -->` markers.
 
-**If Forge section exists:** Replace only the Forge section with updated content from current `project.yaml`. Preserve all content outside the Forge section.
+**Managed block regeneration procedure:**
 
-**If no Forge section exists:** Append a Forge section at the end.
+1. Read `.forge/project.yaml` for current project values
+2. Locate `<!-- forge:begin -->` and `<!-- forge:end -->` markers in CLAUDE.md
+3. Replace content between markers with regenerated block (using current project.yaml values)
+4. Preserve ALL content outside the markers — never touch user-written content
+5. Report what changed: "Updated CLAUDE.md: changed test command from 'jest' to 'vitest'"
 
-Forge section template (populate from project.yaml):
+**If markers exist:** Replace only the content between `<!-- forge:begin -->` and `<!-- forge:end -->` with updated content from current `project.yaml`. Preserve all content outside the markers.
+
+**If markers are missing:** Warn the user, ask before proceeding. Suggest running `forge sync --force` to create markers.
+
+**If markers are corrupted** (only open `<!-- forge:begin -->`, no closing `<!-- forge:end -->`): Warn the user, suggest `forge sync --force` to re-create markers from scratch.
+
+Forge managed block template (populate from project.yaml):
 ```markdown
+<!-- forge:begin -->
 ## Forge
 
 This repository uses Forge for structured AI workflows.
@@ -105,19 +116,21 @@ This repository uses Forge for structured AI workflows.
 
 Forge configuration: `.forge/project.yaml`
 Forge policies: `policies/`
+<!-- forge:end -->
 ```
 
 After updating, confirm: "Updated CLAUDE.md Forge section."
 
 
-## Step 5 — Regenerate AGENTS.md
+## Step 5 — Regenerate AGENTS.md Managed Block
 
 Only execute this step if `codex: true` is set in `project.yaml` OR if `AGENTS.md` already exists.
 
-Read existing `AGENTS.md` (if present). Update the Forge-generated section with current stack and commands from `project.yaml`. Preserve any non-Forge sections.
+Read existing `AGENTS.md` (if present). Locate `<!-- forge:begin -->` and `<!-- forge:end -->` markers. Replace content between markers with regenerated block listing all agents found in the `agents/` directory. Preserve all content outside the markers.
 
-If creating fresh:
+If markers are missing or AGENTS.md is being created fresh:
 ```markdown
+<!-- forge:begin -->
 # Agents
 
 This repository uses Forge for structured AI workflows.
@@ -129,8 +142,12 @@ This repository uses Forge for structured AI workflows.
 - Test: <commands.test>
 - Lint: <commands.lint>
 
+## Agent Roster
+<list all agents found in agents/ directory>
+
 ## Forge Policies
 See `policies/` for risk-tier rules governing this repository.
+<!-- forge:end -->
 ```
 
 After updating, confirm: "Updated AGENTS.md."
@@ -196,6 +213,12 @@ Action required:
 ```
 
 If nothing changed: "Forge is fully synced. No action required."
+
+
+## Flags
+
+- `--re-infer`: Re-scan the repo for stack/commands before regenerating managed blocks. Useful when the project has changed significantly and project.yaml may be outdated.
+- `--force`: Re-create markers from scratch by appending a fresh `<!-- forge:begin -->` / `<!-- forge:end -->` block. Use when markers are missing or corrupted.
 
 
 ## Scope Limits

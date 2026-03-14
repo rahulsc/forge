@@ -42,7 +42,47 @@ Example output:
 ```
 
 
-## Check 1 — Directory Structure Integrity
+## Diagnostic Checks
+
+`forge doctor` validates the health of a Forge installation:
+
+| # | Check | What It Validates | Fix Suggestion |
+|---|-------|------------------|---------------|
+| 1 | `.forge/project.yaml` exists | Forge is adopted in this repo | Run `forge adopt` |
+| 2 | `project.yaml` has non-empty fields | Adoption was complete | Run `forge sync --re-infer` |
+| 3 | CLAUDE.md has forge markers | Managed block exists | Run `forge sync` |
+| 4 | Markers are well-formed | Open `<!-- forge:begin -->` has matching `<!-- forge:end -->` | Fix manually or run `forge sync --force` |
+| 5 | `bin/forge-state` is accessible | CLI tools work | Check Forge installation path |
+| 6 | `.forge/local/` exists | State directory present | Run `bin/forge-state init` |
+| 7 | Hooks are registered | Lifecycle hooks active | Check `hooks/hooks.json` |
+| 8 | Policy file exists | Risk classification works | Run `forge adopt` or create `policies/default.yaml` |
+| 9 | Agent definitions exist | Team composition works | Check `agents/` directory |
+
+
+## Report Format
+
+Present results as a checklist:
+
+```
+Forge Doctor Results:
+  [pass] .forge/project.yaml exists
+  [pass] project.yaml has non-empty fields
+  [FAIL] CLAUDE.md missing forge markers — run `forge sync`
+  [pass] bin/forge-state accessible
+  [pass] .forge/local/ exists
+  [pass] Hooks registered (4 hooks)
+  [pass] Policy file exists
+  [pass] Agent definitions found (10 agents)
+
+7/9 checks passed. 1 issue found.
+```
+
+For each failure, show the fix suggestion inline.
+
+
+## Detailed Check Procedures
+
+### Check 1 — Directory Structure Integrity
 
 Verify the project structure exists with required directories.
 
@@ -74,7 +114,7 @@ If `.forge/` does not exist at all:
 Then skip remaining checks — no `.forge/` means nothing else can be validated.
 
 
-## Check 2 — project.yaml Validation
+### Check 2 — project.yaml Validation
 
 Read and validate `.forge/project.yaml`.
 
@@ -109,7 +149,7 @@ If file missing:
 ```
 
 
-## Check 3 — Hook Installation
+### Check 3 — Hook Installation
 
 Verify Forge hooks are registered in `hooks/hooks.json`.
 
@@ -138,7 +178,7 @@ If `hooks/hooks.json` does not exist:
 ```
 
 
-## Check 4 — Storage Backend Health
+### Check 4 — Storage Backend Health
 
 Verify the state storage backend is functional and data is intact.
 
@@ -177,7 +217,7 @@ Read `storage` field from `project.yaml` to determine backend.
 ```
 
 
-## Check 5 — Stale State Detection
+### Check 5 — Stale State Detection
 
 Check for orphaned worktrees, incomplete tasks, and zombie checkpoints.
 
@@ -214,7 +254,7 @@ If no stale state found:
 ```
 
 
-## Check 6 — Pack Integrity
+### Check 6 — Pack Integrity
 
 Only run if `packs/` exists and contains at least one pack.
 
