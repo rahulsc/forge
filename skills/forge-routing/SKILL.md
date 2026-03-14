@@ -39,8 +39,23 @@ Identify the task's intent from the user's message, then route to the appropriat
 | Adoption | "set up Forge", "onboard", "adopt Forge" | `forge:adopting-forge` |
 | Diagnosis | "why is", "investigate", "something's wrong", "diagnose" | `forge:diagnosing-forge` |
 | Sync | "update Forge", "out of date", "sync Forge" | `forge:syncing-forge` |
+| Resume | "where was I", "continue", "resume", session with existing forge-state | Check `forge-state get phase`; if executing, offer to resume at current wave. Route to the skill indicated by current phase state. |
+| Release | "ship it", "cut a release", "prepare release", "tag a version", "version bump" | `forge:verification-before-completion` → `forge:finishing-a-development-branch` |
 
-When intent is ambiguous, route to `forge:brainstorming` — it will clarify.
+When intent is ambiguous, do not guess — see [Ambiguous Intent Handling](#ambiguous-intent-handling) below.
+
+
+## Ambiguous Intent Handling
+
+When intent is ambiguous (user's message could match multiple workflows):
+
+- Do NOT guess. Ask the user which workflow they intend.
+- Present the top 2-3 matching workflows with one-line descriptions.
+- Example: "That could be a new feature or a refactor. Which fits better?
+  1. **Start a feature** — design → plan → implement → verify
+  2. **Refactor safely** — design → plan → TDD → verify → review"
+
+Only proceed after the user clarifies.
 
 
 ## Risk-Aware Routing
@@ -117,7 +132,10 @@ forge-routing (this skill)
     │       ├─ bug               → forge:systematic-debugging
     │       ├─ adopt             → forge:adopting-forge
     │       ├─ diagnose          → forge:diagnosing-forge
-    │       └─ sync              → forge:syncing-forge
+    │       ├─ sync              → forge:syncing-forge
+    │       ├─ resume            → forge-state phase → resume at current wave
+    │       ├─ release           → forge:verification-before-completion → forge:finishing-a-development-branch
+    │       └─ ambiguous         → ask user to clarify
     │
     ├─ Classify risk (reads policies/)
     │       │
