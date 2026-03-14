@@ -1,5 +1,45 @@
 # Forge Release Notes
 
+## v0.3.0 (2026-03-14)
+
+### Adoption, Agents, and Execution
+
+The second staged Beta milestone. Forge can now adopt real repos, has a complete specialist agent roster, and execution is lighter for low-risk work.
+
+#### forge-author Agent (New)
+- Created `forge-author` specialist for writing and editing Forge skills and agent definitions
+- Informed by Anthropic best practices: concise prompts, appropriate freedom levels, progressive disclosure, HARD-GATEs
+
+#### 4 New Specialist Agents
+- `frontend-engineer` — component design, accessibility, browser compatibility, UI testing
+- `backend-engineer` — API design, database integration, scalability, error handling
+- `database-specialist` — schema design, migration safety, rollback plans, data integrity
+- `devops-engineer` — CI/CD pipelines, container config, secrets management, deployment
+
+#### Adoption Flow Rewrite
+- LLM exposure warning displayed before repo scanning (user must acknowledge)
+- Sensitive file detection (.env, credentials, keys) — excluded from LLM context
+- Stack inference: package manager, test runner, linter, CI surface, critical paths
+- CLAUDE.md generation with `<!-- forge:begin/end -->` managed blocks (never overwrites user content)
+- AGENTS.md generation with same managed block strategy (lists all 10 agents)
+
+#### forge sync and forge doctor Updates
+- `forge sync` regenerates managed blocks preserving content outside markers
+- `forge sync --re-infer` re-detects stack from repo
+- `forge sync --force` re-creates markers from scratch
+- `forge doctor` validates 9 health checks with pass/fail report and fix suggestions
+
+#### Routing Improvements
+- Resume work route: detects existing forge-state, offers to continue
+- Prepare release route: "ship it", "cut a release", "prepare release"
+- Ambiguous intent handling: asks user instead of guessing
+
+#### Execution Ergonomics
+- Worktrees optional for minimal-risk work (not created for minimal tier)
+- Review tiers: mechanical (single check), standard (two-stage), complex (two-stage + lead)
+
+---
+
 ## v0.2.1 (2026-03-14)
 
 ### Execution Fixes

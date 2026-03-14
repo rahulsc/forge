@@ -5,7 +5,7 @@
 ## Module Map
 
 - `skills/`        — 21 skill definitions (SKILL.md each), organized by workflow phase
-- `agents/`        — 5 specialist agent definitions (architect, implementer, qa-engineer, code-reviewer, security-reviewer)
+- `agents/`        — 10 specialist agent definitions (architect, implementer, qa-engineer, code-reviewer, security-reviewer, forge-author, frontend-engineer, backend-engineer, database-specialist, devops-engineer)
 - `hooks/`         — Hook scripts and registry (hooks.json) for Claude Code/Cursor lifecycle events
 - `bin/`           — CLI tools: classify-risk, forge-state, forge-evidence, forge-memory, forge-pack, storage backends
 - `policies/`      — Risk classification rules (default.yaml with glob to tier mapping)
@@ -30,6 +30,7 @@
 - **Evidence-gated completion:** `forge-evidence` records structured evidence (command output, citations, diffs). `verification-before-completion` requires evidence before allowing completion claims.
 - **State persistence:** `forge-state` provides a key-value store (SQLite or JSON backend) in `.forge/local/`. State survives across sessions within the same working directory.
 - **Hook lifecycle:** Hooks fire on Claude Code/Cursor events (SessionStart, TaskCompleted, PreToolUse). They initialize state, enforce gates, and run pre-commit checks.
+- **Managed block generation:** `adopting-forge` and `syncing-forge` generate CLAUDE.md and AGENTS.md content within `<!-- forge:begin/end -->` markers. Content outside markers is never modified. `diagnosing-forge` validates marker integrity.
 
 ## Dependency Graph
 
