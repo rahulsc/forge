@@ -33,7 +33,7 @@ Create a task for each item and complete them in order:
 4. **Ask clarifying questions** — one at a time; purpose, constraints, success criteria
 5. **Propose 2-3 approaches** — with trade-offs and your recommendation
 6. **Present design** — sections scaled to complexity; design for isolation and clarity; get user approval
-7. **Write design doc** — save to `docs/plans/<project>/design.md`; commit to git
+7. **Write design doc** — save to `docs/<project>/design/design.md`; commit to git
 8. **Design review loop** — dispatch reviewer subagent; iterate until approved (max 5 rounds)
 9. **User reviews written spec** — ask user to review before proceeding
 10. **Hand off** — invoke `forge:setting-up-project` to create worktree, detect stack, and compose team
@@ -50,7 +50,7 @@ digraph brainstorming {
     "Propose 2-3 approaches" [shape=box];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
-    "Write design to docs/plans/<project>/design.md" [shape=box];
+    "Write design to docs/<project>/design/design.md" [shape=box];
     "Dispatch design reviewer" [shape=box];
     "Reviewer approved?" [shape=diamond];
     "Fix issues, re-dispatch\n(max 5 iterations)" [shape=box];
@@ -66,13 +66,13 @@ digraph brainstorming {
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design to docs/plans/<project>/design.md" [label="yes"];
-    "Write design to docs/plans/<project>/design.md" -> "Dispatch design reviewer";
+    "User approves design?" -> "Write design to docs/<project>/design/design.md" [label="yes"];
+    "Write design to docs/<project>/design/design.md" -> "Dispatch design reviewer";
     "Dispatch design reviewer" -> "Reviewer approved?";
     "Reviewer approved?" -> "Fix issues, re-dispatch\n(max 5 iterations)" [label="issues found"];
     "Reviewer approved?" -> "User reviews spec?" [label="approved"];
     "Fix issues, re-dispatch\n(max 5 iterations)" -> "Reviewer approved?";
-    "User reviews spec?" -> "Write design to docs/plans/<project>/design.md" [label="changes requested"];
+    "User reviews spec?" -> "Write design to docs/<project>/design/design.md" [label="changes requested"];
     "User reviews spec?" -> "forge:setting-up-project" [label="approved"];
 }
 ```
@@ -112,13 +112,13 @@ digraph brainstorming {
 ## After the Design
 
 **Documentation (step 7):**
-- Write the validated design to `docs/plans/<project>/design.md`
-- If too large, split into focused files under `docs/plans/<project>/` (e.g., `overview.md`, `data-model.md`)
+- Write the validated design to `docs/<project>/design/design.md`
+- If too large, split into focused files under `docs/<project>/design/` (e.g., `overview.md`, `data-model.md`)
 - Commit the design document(s) to git
 - `design.md` is immutable — later skills must never overwrite it
 - Write design state via Forge storage:
   ```bash
-  forge-state set design.path "docs/plans/<project>/design.md"
+  forge-state set design.path "docs/<project>/design/design.md"
   forge-state set design.approved false
   ```
 
@@ -180,4 +180,4 @@ If they agree, read `skills/brainstorming/visual-companion.md` before proceeding
 
 **After this skill:** `forge:setting-up-project` — creates worktree, detects stack, composes team, then hands to `forge:writing-plans`
 
-**Creates:** `docs/plans/<project>/design.md` (committed to git)
+**Creates:** `docs/<project>/design/design.md` (committed to git)
