@@ -1437,115 +1437,92 @@ To be included in the Beta README. Based on verifiable, conservative claims.
 
 ### E.1 Task Tracker API
 
-**Type:** Backend REST API (Node.js or Python)
+**Inspired by:** Linear / Asana
+**Ideation target:** Build the MVP backend for a project management tool. Teams need to create workspaces, track tasks with priorities and assignees, and authenticate via tokens. The API should be clean enough that a frontend team could build against it. Focus on the core task lifecycle — no integrations, no real-time updates, no notifications.
 **Starting state:** Empty directory
-**Feature requests:**
-1. "Create a task tracker API with CRUD endpoints for tasks (title, description, status, assignee)"
-2. "Add JWT authentication — only authenticated users can create/update tasks"
-3. Bug: "Tasks with status 'done' can still be updated — they should be immutable"
-
-**Workflows exercised:** Adopt repo, Start feature (x2), Fix bug
-**Risk tiers:** standard (CRUD), elevated (auth/JWT)
-**Agents needed:** backend-engineer, qa-engineer, security-reviewer
-**Estimated duration:** 30-45 min (auto mode)
+**Expected risk tiers:** standard (CRUD), elevated (auth/JWT)
+**Expected workflows:** Adopt repo, Start feature, Fix bug
+**Expected agents:** backend-engineer, qa-engineer, security-reviewer
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
 ---
 
 ### E.2 Dashboard UI
 
-**Type:** Frontend SPA (React or Vue)
+**Inspired by:** Grafana / Datadog dashboard view
+**Ideation target:** Build the frontend shell for a monitoring dashboard. Operators need a sidebar to navigate between views, a responsive card grid to display metrics, and a dark mode toggle that persists across sessions. This is the layout and navigation layer only — no real data sources, no charting libraries, no WebSocket connections.
 **Starting state:** Empty directory
-**Feature requests:**
-1. "Build a dashboard with a sidebar nav, header, and main content area showing a card grid"
-2. "Add a dark mode toggle that persists to localStorage"
-3. Review: "Review the component structure for accessibility and reusability"
-
-**Workflows exercised:** Adopt repo, Start feature (x2), Review change
-**Risk tiers:** minimal (UI), standard (state management)
-**Agents needed:** frontend-engineer, qa-engineer, code-reviewer
-**Estimated duration:** 20-30 min (auto mode)
+**Expected risk tiers:** minimal (UI layout), standard (state management)
+**Expected workflows:** Adopt repo, Start feature, Review change
+**Expected agents:** frontend-engineer, qa-engineer, code-reviewer
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
 ---
 
 ### E.3 CLI Migration Tool
 
-**Type:** CLI tool with database migrations (Python or Go)
+**Inspired by:** Flyway / golang-migrate
+**Ideation target:** Build a database migration CLI that developers run locally and in CI. It needs to discover migration files by convention, track which have been applied via a version table, support up/down/status/seed commands, and handle rollback safely. Data integrity on rollback is critical — a failed down migration must not leave the database in an inconsistent state. No ORM integration, no cloud database support.
 **Starting state:** Empty directory
-**Feature requests:**
-1. "Create a CLI tool that manages database schema migrations — up, down, status commands"
-2. "Add a 'seed' command that populates test data from a YAML fixture file"
-3. Bug: "Running 'down' twice on the same migration causes a crash instead of a no-op"
-
-**Workflows exercised:** Adopt repo, Start feature (x2), Fix bug
-**Risk tiers:** elevated (migrations), critical (data integrity on rollback)
-**Agents needed:** database-specialist, implementer, qa-engineer
-**Estimated duration:** 30-40 min (auto mode)
+**Expected risk tiers:** elevated (migrations), critical (data integrity on rollback)
+**Expected workflows:** Adopt repo, Start feature, Fix bug
+**Expected agents:** database-specialist, implementer, qa-engineer
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
 ---
 
 ### E.4 Deploy Pipeline
 
-**Type:** Infrastructure (Docker + GitHub Actions)
+**Inspired by:** Vercel / Railway deploy flow
+**Ideation target:** Add containerized local development and CI/CD to an existing Node.js app that currently has no deployment story. Developers need docker-compose for local dev, and the team needs a GitHub Actions pipeline that lints, tests, builds, and produces a deployable artifact. The pipeline must handle secrets safely. No actual cloud deployment — just the pipeline and container setup.
 **Starting state:** Provided skeleton (simple Node.js app with no deployment)
-**Feature requests:**
-1. "Add a Dockerfile and docker-compose.yml for local development"
-2. "Create a GitHub Actions CI pipeline: lint, test, build, and deploy to staging"
-3. Incident: "The staging deploy is failing because the health check endpoint returns 503 after deploy — investigate"
-
-**Workflows exercised:** Adopt repo, Start feature (x2), Investigate incident
-**Risk tiers:** elevated (infrastructure), critical (secrets in CI config)
-**Agents needed:** devops-engineer, security-reviewer, architect
-**Estimated duration:** 25-35 min (auto mode)
+**Expected risk tiers:** elevated (infrastructure), critical (secrets in CI config)
+**Expected workflows:** Adopt repo, Start feature, Investigate incident
+**Expected agents:** devops-engineer, security-reviewer, architect
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
 ---
 
 ### E.5 Auth Service
 
-**Type:** Security-critical backend (Node.js or Go)
+**Inspired by:** Auth0 / Clerk (core auth layer)
+**Ideation target:** Build the authentication backbone for a SaaS product. Users need signup, login, token refresh, and logout. The system needs role-based access control with admin, editor, and viewer roles. Security is paramount — passwords must be hashed properly, tokens must expire, and the API must defend against common auth attacks. No OAuth, no MFA, no social login — just the core credential and session layer.
 **Starting state:** Empty directory
-**Feature requests:**
-1. "Build an auth service with signup, login, token refresh, and logout endpoints"
-2. "Add role-based access control (RBAC) with admin, editor, and viewer roles"
-3. Refactor: "The password hashing uses MD5 — refactor to bcrypt with proper salt rounds"
-
-**Workflows exercised:** Adopt repo, Start feature (x2), Refactor safely
-**Risk tiers:** critical (auth, tokens, password handling, encryption)
-**Agents needed:** security-reviewer, backend-engineer, architect, qa-engineer
-**Estimated duration:** 35-50 min (auto mode)
+**Expected risk tiers:** critical (auth, tokens, password handling, encryption)
+**Expected workflows:** Adopt repo, Start feature, Refactor safely
+**Expected agents:** security-reviewer, backend-engineer, architect, qa-engineer
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
 ---
 
 ### E.6 Full-Stack Notes App
 
-**Type:** End-to-end application (Frontend + Backend + Database + Deployment)
+**Inspired by:** Notion / Apple Notes (minimal version)
+**Ideation target:** Build a complete note-taking app from frontend to deployment. Users need to create, read, update, and delete notes with a clean UI. The app needs a React frontend, an Express API, and SQLite for storage. This project exercises the full Forge lifecycle: feature development, bug fixing, refactoring, code review, cold-start resume, release preparation, and incident investigation. No collaboration features, no rich text editing, no file attachments — just the core CRUD experience end-to-end.
 **Starting state:** Empty directory
-**Feature requests (multi-phase):**
+**Expected risk tiers:** All 4 (minimal for CSS, standard for CRUD, elevated for API auth, critical for data integrity)
+**Expected workflows:** All 8
+**Expected agents:** All (frontend-engineer, backend-engineer, database-specialist, devops-engineer, security-reviewer, architect, qa-engineer, code-reviewer)
+**MVP scope:** Determined by `forge:brainstorming` given the ideation target and risk constraints. Brainstorming chooses actual agents, workflows, and scope — these expectations are measurement targets, not hard requirements.
 
-*Phase 1 — Start feature:*
-1. "Build a full-stack notes app: React frontend, Express API, SQLite database"
+**Multi-phase execution:**
+1. Start feature → build the app
+2. Fix bug → notes over 10k characters cause 500 error
+3. Refactor → callback-style API to async/await
+4. Review → full security, accessibility, code quality review
+5. Resume → simulate cold start mid-refactor
+6. Release → changelog, version bump, final verification
+7. Investigate → users report duplicate notes on save
 
-*Phase 2 — Fix bug:*
-2. Bug: "Notes longer than 10,000 characters cause the API to return a 500 error"
+### Measurement approach
 
-*Phase 3 — Refactor:*
-3. "Refactor the API from callback-style to async/await throughout"
+After each reference project run, compare actual choices against expectations:
+- Which agents were dispatched vs expected?
+- Which workflows were used vs expected?
+- Which risk tiers were hit vs expected?
+- Did brainstorming produce a reasonable MVP scope for the ideation target?
 
-*Phase 4 — Review:*
-4. "Review the entire codebase for security, accessibility, and code quality"
-
-*Phase 5 — Resume (simulate cold start):*
-5. "I had to stop mid-refactor — pick up where I left off"
-
-*Phase 6 — Release:*
-6. "Prepare a v1.0 release — changelog, version bump, final verification"
-
-*Phase 7 — Investigate:*
-7. "After release, users report notes are sometimes duplicated on save — investigate"
-
-**Workflows exercised:** All 8
-**Risk tiers:** All 4 (minimal for CSS, standard for CRUD, elevated for API auth, critical for data integrity)
-**Agents needed:** All (frontend-engineer, backend-engineer, database-specialist, devops-engineer, security-reviewer, architect, qa-engineer, code-reviewer, technical-writer)
-**Estimated duration:** 60-90 min (auto mode, multi-session)
+These are not pass/fail criteria — they're signals. After multiple runs, the data shows whether Forge is converging toward above-median outcomes. The goal is consistency and quality improvement over time, not exact matches.
 
 ---
 
