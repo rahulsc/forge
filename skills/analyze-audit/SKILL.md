@@ -20,7 +20,7 @@ Produce actionable improvement recommendations by analyzing deviation logs, git 
 | Plan documents | `docs/*/plans/plan.md` | Task specs, wave structure, dependencies |
 | Release notes | `RELEASE-NOTES.md` | What was delivered per version |
 
-### Future (v0.4.0+)
+### Structured Audit Data (v0.4.0+)
 
 | Source | Location | What It Contains |
 |--------|----------|-----------------|
@@ -41,11 +41,18 @@ Analyze each dimension and report findings:
 | **Commit hygiene** | Commits per task, squash usage, message quality | Analyze `git log --oneline` for commit count per version |
 | **Skill coverage** | Which skills were invoked vs available | List all skills; check git/plan history for invocation evidence |
 | **Agent utilization** | Which agents were used vs defined | List all agents; check plan wave analysis for dispatch evidence |
+| **Token cost per skill** | Total tokens consumed by each skill | JSONL skill_enter/skill_exit events |
+| **Token cost per workflow** | Total tokens for each workflow type | JSONL events grouped by workflow field |
+| **Gate pass rate** | % of gates passed on first attempt | JSONL gate_check events |
+| **Session duration** | Wall clock time per session | JSONL session_start to last event timestamp |
 
 ## Process
 
 1. **Locate sources** — find deviation worklog, recent git history, plan documents
 2. **Read and parse** — extract deviation entries, commit data, plan tasks
+   - If `.forge/local/audit/*.jsonl` files exist, parse structured events
+   - Extract token counts, durations, and event types from JSONL
+   - Merge with manual deviation data for combined analysis
 3. **Analyze each dimension** — produce findings per dimension
 4. **Identify patterns** — cross-dimension patterns (e.g., "enforcement gates" as recurring fix)
 5. **Prioritize recommendations** — high (blocking adoption), medium (friction), low (cosmetic)
@@ -80,6 +87,18 @@ Analyze each dimension and report findings:
 
 ## Agent Utilization
 [dispatched vs defined, gaps]
+
+## Cost Analysis (from audit JSONL)
+
+*This section appears only when JSONL audit data is available.*
+
+| Skill | Invocations | Avg Tokens In | Avg Tokens Out | Avg Duration |
+|-------|-------------|---------------|----------------|-------------|
+| [skill] | [count] | [avg] | [avg] | [avg] |
+
+**Total session cost:** ~$X.XX (estimated)
+**Most expensive skill:** [skill] ([%] of total tokens)
+**Most expensive workflow:** [workflow] ([%] of total tokens)
 
 ## Recommendations
 | Priority | Recommendation | Based On |
