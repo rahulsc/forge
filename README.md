@@ -335,6 +335,11 @@ contains:
 | **qa-engineer** | Test design, coverage analysis | Pipelined TDD, test quality |
 | **code-reviewer** | Code quality, plan compliance | Post-implementation review |
 | **security-reviewer** | Vulnerability assessment, auth review | Critical-tier security audit |
+| **forge-author** | Skill and agent definition authoring | Writing and editing Forge skills and agents |
+| **frontend-engineer** | Component design, accessibility, UI testing | Frontend tasks, browser compatibility |
+| **backend-engineer** | API design, database integration, error handling | Backend tasks, data access, scalability |
+| **database-specialist** | Schema design, migration safety, data integrity | Database changes, migration review |
+| **devops-engineer** | CI/CD pipelines, container config, secrets management | Deployment, infrastructure review |
 
 These agents are used by `forge:agent-team-driven-development` and
 `forge:composing-teams` for parallel wave execution with between-wave
