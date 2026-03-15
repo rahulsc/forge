@@ -1,5 +1,18 @@
 # Forge Release Notes
 
+## v0.4.1 (2026-03-15)
+
+### Agent Shutdown Fix + Reference Project Infrastructure
+
+- **Agent shutdown fix** — wave-suffixed agent names (`forge-author-w0`, `shell-eng-w1`) prevent name collisions across waves. Structured `shutdown_request` only — never plain text. Immediate shutdown after wave completion, not batched at end.
+- **Audit UX** — enhanced audit opt-in description ("What it does", "What it's used for"). End-of-workflow audit prompt in finishing-a-development-branch tells users to run `forge:analyze-audit`.
+- **Stale task cleanup** — brainstorming checks TaskList at session start and offers to clean orphaned tasks. finishing-a-development-branch cleans remaining tasks at closeout.
+- **Assessment formatting** — setting-up-project now uses table format for risk/team assessment and readiness summary.
+- **Reference project infrastructure** — `reference-projects/` directory with runbook, 6 project specs (spec.yaml + scaffold.sh + measure.sh). Projects: Task Tracker API, Dashboard UI, CLI Migration Tool, Deploy Pipeline, Auth Service, Full-Stack Notes App.
+- **Deviations #12-13 fixed**, #14 (formatting audit) logged for v0.5.0.
+
+---
+
 ## v0.4.0 (2026-03-15)
 
 ### Audit Infrastructure (TDD Milestone)
