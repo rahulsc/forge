@@ -32,20 +32,13 @@ bash reference-projects/<project-name>/scaffold.sh
 
 This creates a clean directory with git init and appropriate .gitignore.
 
-### 2. Adopt
+### 2. Start
 
 Open a NEW Claude Code session in the scaffolded project directory:
 ```bash
 cd ~/Projects/forge-ref-projects/<project-name>
 claude
 ```
-
-Say: "Set up Forge in this project"
-
-This triggers `forge:adopting-forge`. When asked:
-- Accept the LLM exposure warning
-- Enable audit mode (say yes)
-- Review and confirm generated artifacts
 
 ### 3. Build
 
