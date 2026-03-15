@@ -15,6 +15,10 @@ Claiming work is complete without verification is dishonesty, not efficiency.
 
 This skill is invoked by execution skills at task completion and by hooks. NOT optional.
 
+<HARD-GATE>
+Do NOT claim work is complete, fixed, or passing without evidence. Required evidence: command output (test results) + diff (commit SHA + stat). If evidence is missing, stop and collect it before making any completion claim.
+</HARD-GATE>
+
 ## The Iron Law
 
 ```

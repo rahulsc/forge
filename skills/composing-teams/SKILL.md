@@ -78,6 +78,10 @@ Ask the user:
 - If no model or `model: inherit` → use the most powerful available model
 - Note any agents without explicit model and inform the user
 
+<HARD-GATE>
+Do NOT write team.roster to state without explicit user approval of the proposed roster. Present the roster, wait for confirmation, then write to state.
+</HARD-GATE>
+
 ### Step 4: Output Team Roster
 
 Add the team roster to the design doc:

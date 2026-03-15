@@ -13,6 +13,10 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Announce at start:** "I'm using the forge:finishing-a-development-branch skill to complete this work."
 
+<HARD-GATE>
+Do NOT merge, create a PR, or close a branch without verification. `forge:verification-before-completion` must have passed for the current work. If verification hasn't run, invoke it first.
+</HARD-GATE>
+
 ## The Process
 
 ### Step 0: Verification Gate
