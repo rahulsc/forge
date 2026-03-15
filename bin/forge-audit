@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# forge-audit — audit event recording and listing for Forge
+# Usage:
+#   forge-audit record --type <type> [--skill S] [--workflow W] [--risk-tier T]
+#                      [--outcome O] [--tokens-in N] [--tokens-out N]
+#                      [--duration-ms N] [--detail D] [--host H] [--project-dir DIR]
+#   forge-audit list [--session <id>] [--project-dir DIR]
+
+set -euo pipefail
+
+# --- Locate bin directory ---
+FORGE_BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# --- Argument parsing ---
+SUBCOMMAND=""
+PROJECT_DIR=""
+TYPE=""
+SKILL=""
+WORKFLOW=""
+RISK_TIER=""
+OUTCOME=""
+TOKENS_IN=""
+TOKENS_OUT=""
+DURATION_MS=""
+DETAIL=""
+HOST=""
+SESSION=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --project-dir)   shift; PROJECT_DIR="$1"; shift ;;
+        --project-dir=*) PROJECT_DIR="${1#--project-dir=}"; shift ;;
+        --type)          shift; TYPE="$1"; shift ;;
+        --type=*)        TYPE="${1#--type=}"; shift ;;
+        --skill)         shift; SKILL="$1"; shift ;;
+        --skill=*)       SKILL="${1#--skill=}"; shift ;;
+        --workflow)      shift; WORKFLOW="$1"; shift ;;
+        --workflow=*)    WORKFLOW="${1#--workflow=}"; shift ;;
+        --risk-tier)     shift; RISK_TIER="$1"; shift ;;
+        --risk-tier=*)   RISK_TIER="${1#--risk-tier=}"; shift ;;
+        --outcome)       shift; OUTCOME="$1"; shift ;;
+        --outcome=*)     OUTCOME="${1#--outcome=}"; shift ;;
+        --tokens-in)     shift; TOKENS_IN="$1"; shift ;;
+        --tokens-in=*)   TOKENS_IN="${1#--tokens-in=}"; shift ;;
+        --tokens-out)    shift; TOKENS_OUT="$1"; shift ;;
+        --tokens-out=*)  TOKENS_OUT="${1#--tokens-out=}"; shift ;;
+        --duration-ms)   shift; DURATION_MS="$1"; shift ;;
+        --duration-ms=*) DURATION_MS="${1#--duration-ms=}"; shift ;;
+        --detail)        shift; DETAIL="$1"; shift ;;
+        --detail=*)      DETAIL="${1#--detail=}"; shift ;;
+        --host)          shift; HOST="$1"; shift ;;
+        --host=*)        HOST="${1#--host=}"; shift ;;
+        --session)       shift; SESSION="$1"; shift ;;
+        --session=*)     SESSION="${1#--session=}"; shift ;;
+        -*)              shift ;;
+        *)
+            if [ -z "$SUBCOMMAND" ]; then
+                SUBCOMMAND="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+# --- Resolve project directory ---
+if [ -z "$PROJECT_DIR" ]; then
+    PROJECT_DIR="${FORGE_PROJECT_DIR:-$(pwd)}"
+fi
+
+AUDIT_DIR="$PROJECT_DIR/.forge/local/audit"
+
+# --- Dispatch ---
+case "$SUBCOMMAND" in
+    record)
+        if [ -z "$TYPE" ]; then
+            printf 'error: forge-audit record requires --type\n' >&2
+            exit 1
+        fi
+
+        # Check if audit is enabled
+        AUDIT_ENABLED=$("$FORGE_BIN_DIR/forge-state" get "audit.enabled" --project-dir "$PROJECT_DIR" 2>/dev/null || true)
+        if [ "$AUDIT_ENABLED" != "true" ]; then
+            exit 0
+        fi
+
+        # Determine session_id
+        if [[ -n "${FORGE_SESSION_ID:-}" ]]; then
+            session_id="$FORGE_SESSION_ID"
+        else
+            # Reuse existing session if one exists in the audit dir
+            existing_file=$(find "$AUDIT_DIR" -name '*.jsonl' 2>/dev/null | head -1 || true)
+            if [[ -n "$existing_file" ]]; then
+                session_id="$(basename "$existing_file" .jsonl)"
+            else
+                session_id="sess_$(date +%Y%m%d_%H%M%S)_$$"
+            fi
+        fi
+
+        # Ensure audit directory exists
+        mkdir -p "$AUDIT_DIR"
+
+        # Build JSON line
+        json=$(printf '{"timestamp":"%s","session_id":"%s","action_type":"%s"' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$session_id" "$TYPE")
+
+        if [[ -n "$SKILL" ]]; then
+            json=$(printf '%s,"skill":"%s"' "$json" "$SKILL")
+        fi
+        if [[ -n "$WORKFLOW" ]]; then
+            json=$(printf '%s,"workflow":"%s"' "$json" "$WORKFLOW")
+        fi
+        if [[ -n "$RISK_TIER" ]]; then
+            json=$(printf '%s,"risk_tier":"%s"' "$json" "$RISK_TIER")
+        fi
+        if [[ -n "$OUTCOME" ]]; then
+            json=$(printf '%s,"outcome":"%s"' "$json" "$OUTCOME")
+        fi
+        if [[ -n "$TOKENS_IN" ]]; then
+            json=$(printf '%s,"tokens_in":%s' "$json" "$TOKENS_IN")
+        fi
+        if [[ -n "$TOKENS_OUT" ]]; then
+            json=$(printf '%s,"tokens_out":%s' "$json" "$TOKENS_OUT")
+        fi
+        if [[ -n "$DURATION_MS" ]]; then
+            json=$(printf '%s,"duration_ms":%s' "$json" "$DURATION_MS")
+        fi
+        if [[ -n "$DETAIL" ]]; then
+            json=$(printf '%s,"detail":"%s"' "$json" "$DETAIL")
+        fi
+        if [[ -n "$HOST" ]]; then
+            json=$(printf '%s,"host":"%s"' "$json" "$HOST")
+        fi
+
+        json=$(printf '%s}' "$json")
+
+        # Append to session JSONL file
+        printf '%s\n' "$json" >> "$AUDIT_DIR/${session_id}.jsonl"
+        ;;
+
+    list)
+        if [[ -n "$SESSION" ]]; then
+            # List events for a specific session
+            local_file="$AUDIT_DIR/${SESSION}.jsonl"
+            if [[ -f "$local_file" ]]; then
+                cat "$local_file"
+            fi
+        else
+            # List events from the most recent session
+            latest_file=$(ls -t "$AUDIT_DIR"/*.jsonl 2>/dev/null | head -1 || true)
+            if [[ -n "$latest_file" ]]; then
+                cat "$latest_file"
+            fi
+        fi
+        ;;
+
+    "")
+        printf 'Usage: forge-audit <record|list> [options]\n' >&2
+        exit 1
+        ;;
+
+    *)
+        printf 'error: unknown subcommand: %s\n' "$SUBCOMMAND" >&2
+        exit 1
+        ;;
+esac
