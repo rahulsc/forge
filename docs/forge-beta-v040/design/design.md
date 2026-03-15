@@ -294,5 +294,4 @@ Deviations from v0.4.0 development will be appended here.
 
 | # | Version | Skill | Expected | Actual | Severity | Root Cause | Fix Target | Status |
 |---|---------|-------|----------|--------|----------|------------|------------|--------|
-
-(No entries yet — v0.4.0 development has not started)
+| 12 | v0.4.0-dev | `agent-team-driven-development` | Agents shut down cleanly when work is complete | Wave 0 agents (qa-engineer, forge-author) entered idle loop after being replaced by Wave 1/2 instances. Plain text broadcast "shut down" didn't terminate them. Structured shutdown_request sent later but agents were stuck cycling idle/ready. TeamDelete blocked by 2 unkillable agents. | friction | Two issues: (1) plain text broadcasts don't terminate agents — only structured shutdown_request does. (2) When an agent with the same role name is respawned for a later wave, the original instance stays alive and can't be addressed cleanly. | v0.4.1 | open |
