@@ -1,0 +1,10 @@
+name: full-stack-notes-app
+version: ""
+stack:
+  languages: []
+  frameworks: []
+  package_manager: ""
+  ci: ""
+commands:
+  test: ""
+  lint: ""

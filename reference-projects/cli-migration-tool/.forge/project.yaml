@@ -1,0 +1,10 @@
+name: cli-migration-tool
+version: ""
+stack:
+  languages: []
+  frameworks: []
+  package_manager: ""
+  ci: ""
+commands:
+  test: ""
+  lint: ""

@@ -1,0 +1,16 @@
+# Reference projects: track only specs, measurement, results, and minimal .forge config
+# Everything generated during runs (code, tests, node_modules, etc.) is ignored
+
+# Ignore everything by default
+*
+
+# But track these
+!.gitignore
+!runbook.md
+!*/
+!*/spec.yaml
+!*/measure.sh
+!*/runs/
+!*/runs/**
+!*/.forge/
+!*/.forge/project.yaml

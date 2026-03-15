@@ -1,0 +1,10 @@
+name: dashboard-ui
+version: ""
+stack:
+  languages: []
+  frameworks: []
+  package_manager: ""
+  ci: ""
+commands:
+  test: ""
+  lint: ""

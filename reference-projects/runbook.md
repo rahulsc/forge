@@ -10,45 +10,54 @@ Reference projects validate that Forge workflows work on real code. Each project
 
 ```
 reference-projects/
+  .gitignore                          ← ignores generated code, tracks specs/results
   runbook.md                          ← this file
   <project-name>/
     spec.yaml                         ← fixed inputs (ideation, expectations)
-    scaffold.sh                       ← creates clean project directory
+    .forge/project.yaml               ← minimal config (enables state isolation)
     measure.sh                        ← collects metrics after execution
     runs/
       <date>-v<forge-version>.md      ← timestamped results
 ```
 
-Projects are built in `~/Projects/forge-ref-projects/<name>/` — outside the Forge repo.
+Projects run IN-REPO as subfolders. Each has its own `.forge/project.yaml` so Forge state resolves locally (not to the repo root). Generated code, node_modules, etc. are gitignored — only specs, measurement scripts, and run results are tracked.
+
+## How State Isolation Works
+
+Forge's session hook walks up from `pwd` looking for `.forge/project.yaml`. The nearest one wins:
+- At repo root → Forge's own `.forge/project.yaml` (development mode)
+- In `reference-projects/task-tracker-api/` → that project's `.forge/project.yaml`
+
+This means you can develop Forge at the repo root AND run reference projects in subfolders without state collision. See `docs/forge-beta/design/mono-repo-notes.md` for v1.0 implications.
 
 ## Execution Protocol
 
-### 1. Prep
+### 1. Create Worktree (isolates git history)
 
 ```bash
 cd /path/to/forge
-bash reference-projects/<project-name>/scaffold.sh
+git worktree add .worktrees/ref-run-<date> -b ref/run-<date>
+cd .worktrees/ref-run-<date>
 ```
 
-This creates a clean directory with git init and appropriate .gitignore.
+### 2. Start Session
 
-### 2. Start
-
-Open a NEW Claude Code session in the scaffolded project directory:
+Navigate to the reference project subfolder and start Claude Code:
 ```bash
-cd ~/Projects/forge-ref-projects/<project-name>
+cd reference-projects/<project-name>
 claude
 ```
 
+Forge's plugin loads from the repo root. State resolves to the subfolder's `.forge/`.
+
 ### 3. Build
 
-Paste the ideation text EXACTLY as written in spec.yaml:
-
+Tell Claude to read the spec and build:
 ```
-<paste ideation field from spec.yaml>
+Read spec.yaml and use the ideation text to start building this project.
 ```
 
-Let brainstorming determine the MVP scope. Do NOT guide or constrain the brainstorming — let Forge work autonomously. Record any deviations where Forge doesn't behave as expected.
+Let brainstorming determine the MVP scope. Do NOT guide or constrain — let Forge work autonomously. Record any deviations where Forge doesn't behave as expected.
 
 ### 4. Execute
 
@@ -64,9 +73,9 @@ Observe and note:
 
 ### 5. Measure
 
-After completion, run the measurement script:
+After completion, run the measurement script from the project dir:
 ```bash
-bash reference-projects/<project-name>/measure.sh
+bash measure.sh <forge-version>
 ```
 
 Fill in the manual assessment items in the output.
@@ -75,8 +84,10 @@ Fill in the manual assessment items in the output.
 
 Save the measurement output to:
 ```
-reference-projects/<project-name>/runs/<date>-v<forge-version>.md
+runs/<date>-v<forge-version>.md
 ```
+
+Commit the results file (it's tracked by .gitignore rules).
 
 ### 7. Compare
 
@@ -86,6 +97,27 @@ If a baseline exists, compare current metrics against it:
 - Skills invoked (expected coverage maintained?)
 - Duration (trending?)
 - Token cost (when available — trending?)
+
+### 8. Cleanup
+
+After storing results, the worktree can be deleted:
+```bash
+cd /path/to/forge
+git worktree remove .worktrees/ref-run-<date>
+git branch -d ref/run-<date>
+```
+
+Generated code is gitignored and stays in the worktree until removal. Only the results file needs to be cherry-picked or committed to main.
+
+## Running Multiple Projects
+
+You can run multiple projects in the same worktree session. Each has its own `.forge/` state:
+```bash
+cd reference-projects/task-tracker-api && claude   # run project 1
+cd ../dashboard-ui && claude                       # run project 2
+```
+
+State isolation is per-subfolder — no collision between projects.
 
 ## Metric Tiers
 
