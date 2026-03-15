@@ -291,6 +291,25 @@ done
 - Clean `.forge/local/` evidence after finish
 - Clean up worktree for Options 1, 2 & 4
 
+## Closeout Cleanup
+
+Before finishing:
+1. Check TaskList for any remaining in_progress tasks
+2. Delete stale tasks via TaskUpdate with status=deleted
+3. Verify TaskList is clean
+
+## Audit Summary (if enabled)
+
+Check: `forge-state get audit.enabled`
+
+If true:
+> "Audit data was recorded for this project at `.forge/local/audit/`.
+>
+> To analyze your workflow data, run: `forge:analyze-audit`
+>
+> This produces a report showing skill coverage, token costs,
+> deviation patterns, and improvement recommendations."
+
 ## Integration
 
 **Called by:**

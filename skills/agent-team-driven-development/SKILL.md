@@ -176,7 +176,9 @@ Wave Cleanup Routine:
 4. TaskList — verify zero stale in_progress tasks remain
 5. If stale tasks found:
    → Force-complete with TaskUpdate, log: "force-cleaned by lead after wave N"
-6. Send shutdown to agents no longer needed for subsequent waves
+6. Send structured shutdown to agents no longer needed:
+   - Use `SendMessage` with `{"type": "shutdown_request"}` — NEVER plain text
+   - Wait for `shutdown_approved` response; if no response in 30 seconds, log and proceed
 7. Post between-waves status summary (see Status Reporting)
 ```
 
@@ -294,6 +296,13 @@ digraph agent_team {
 7. **Create task list** — `TaskCreate` for each task, `TaskUpdate` to set `addBlockedBy` for cross-wave dependencies
 8. **Wave 0 (if QA in roster)** — spawn QA agent in lead's worktree, have them write tests for Wave 1 tasks
 9. **Spawn implementers** — one per task in wave 1, specialized by role, using agent definitions from team roster and `./implementer-prompt.md`. Each must have its own worktree (via `isolation: "worktree"` in Claude Code, or manually created on other platforms)
+
+**Agent naming convention:** Use wave-suffixed names to avoid collisions:
+- Wave 0: `qa-w0`, `forge-author-w0`
+- Wave 1: `shell-eng-w1`, `forge-author-w1`
+- Wave 2: `shell-eng-w2`, `forge-author-w2`
+
+Never reuse a name from an earlier wave, even for the same role.
 
 ### Phase 2: Wave Execution
 
@@ -438,6 +447,9 @@ Before marking the plan complete, review all completed tasks together for cross-
 - Skip task list cleanup (leaves `in_progress` tasks causing stuck status spinners)
 - Let a failed `TeamDelete` or `SendMessage` block subsequent cleanup steps
 - Finish without marking all sub-tasks (impl-task-*, review-task-*, qa-wave*, etc.) as completed
+- Use plain text messages to request shutdown (only structured `{"type": "shutdown_request"}` works)
+- Reuse agent names across waves — use wave-suffixed names: `<role>-w<N>` (e.g., forge-author-w0, qa-w1)
+- Batch all shutdowns at end of execution — shut down agents immediately after their wave completes
 
 **Recovery:**
 - Implementer stuck → check what's blocking via SendMessage, provide guidance

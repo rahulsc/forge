@@ -79,6 +79,14 @@ digraph brainstorming {
 
 ## The Process
 
+**Stale task cleanup:**
+
+Check TaskList for any in_progress tasks from previous sessions. If found:
+> "Found N stale tasks from a previous session. Safe to clean these up? (y/n)"
+
+If yes: delete them via TaskUpdate with status=deleted.
+If no: leave them and proceed.
+
 **Step 1 — Explore and research:**
 - Check current project state: files, docs, recent commits
 - Search for existing solutions before designing new ones
@@ -86,16 +94,24 @@ digraph brainstorming {
 
 **Audit opt-in (ask once per project):**
 
-Check first: `forge-state get audit.enabled` — if already set (true or false), skip this question.
+Check first: `forge-state get audit.enabled` — if already set, skip.
 
 If not set, ask:
-> "Would you like to enable audit mode for this project? Audit records
-> workflow events (skill usage, gate checks, token counts) to
-> `.forge/local/audit/` for later analysis with `forge:analyze-audit`.
+> "Would you like to enable audit mode for this project?
+>
+> **What it does:** Records workflow events (which skills ran, gate check
+> results, token counts, durations) as JSONL in `.forge/local/audit/`.
+> This data stays local — it's never sent anywhere.
+>
+> **What it's used for:** Run `forge:analyze-audit` after your project to
+> see which skills were invoked, how much each cost in tokens, where
+> deviations occurred, and what could improve. Helps Forge get better
+> over time.
+>
 > Default: no"
 
 If yes: `forge-state set audit.enabled true`
-If no (or skipped): do nothing — audit stays disabled by default.
+If no: do nothing.
 
 **Step 2 — Offer visual companion:**
 - When visual questions are ahead, offer the companion once for consent

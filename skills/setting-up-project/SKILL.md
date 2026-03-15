@@ -56,26 +56,28 @@ Scan the design doc for task decomposition. Evaluate all three criteria:
 
 ### 1c. Present combined assessment
 
-Present everything together with justification, then ask for confirmation:
+Present the assessment using tables:
 
-```
-Risk and Execution Assessment:
+**Risk and Execution Assessment:**
 
-  Files affected:  <list of dirs/files>
-  Scope:           <N> tasks
-  Risk tier:       <tier> (<reason — e.g., "no critical paths, small scope">)
+| Dimension | Value | Justification |
+|-----------|-------|---------------|
+| **Files affected** | <list of dirs/files> | <what areas of the codebase> |
+| **Scope** | <N> tasks | <from design doc> |
+| **Risk tier** | <tier> | <reason> |
 
-  Team criteria:
-    Task count:       <N> (<threshold met/not met>)
-    Independence:     <assessment>
-    Specialist domains: <N> — <list> (<threshold met/not met>)
+**Team criteria:**
 
-  Execution strategy: <solo|team> (<justification>)
+| Criterion | Threshold | Value | Met? |
+|-----------|-----------|-------|------|
+| Task count | ≥4 | <N> | Yes/No |
+| Independence | ≥2 parallel | <assessment> | Yes/No |
+| Specialist domains | ≥2 | <N> — <list> | Yes/No |
 
-  Worktree: <recommendation based on tier>
+**Execution strategy:** <solo|team> (<justification>)
+**Worktree:** <recommendation based on tier>
 
 Does this assessment look correct, or would you like to override anything?
-```
 
 <HARD-GATE>
 Do NOT proceed without explicit user confirmation of the risk and execution assessment. The user must agree or override before state is written.
@@ -183,20 +185,16 @@ If these files already exist (re-run or re-adoption), update them in place. Do n
 
 Present a summary before handing off to writing-plans:
 
-```
-Project setup complete:
+**Readiness Summary:**
 
-  Risk tier:  <tier>  (<source>)
-  Worktree:   <path | not created>
-  Team:       <solo | team — N agents>
-  Phase:      setting-up → planning (next)
+| Item | Value |
+|------|-------|
+| **Risk tier** | <tier> (<source>) |
+| **Worktree** | <path or "not created"> |
+| **Team** | <solo or team — N roles listed> |
+| **Phase** | setting-up → planning |
 
-Shared docs updated:
-  .forge/shared/architecture.md
-  .forge/shared/conventions.md
-
-Ready to write implementation plans.
-```
+**Shared docs:** <status>
 
 Ask: "Shall I proceed to `forge:writing-plans`?"
 
