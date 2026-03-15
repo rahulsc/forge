@@ -7,12 +7,12 @@ description: Use when design is approved and you need to initialize project stat
 
 ## Overview
 
-Bridge between an approved design and execution. Classifies risk, initializes state, sets up the workspace, and decides whether to run solo or as a team — so that `forge:writing-plans` can start from a clean, known configuration.
+Bridge between an approved design and execution. Classifies risk, evaluates team criteria, initializes state, sets up the workspace — so that `forge:writing-plans` can start from a clean, known configuration.
 
 **Announce at start:** "I'm using the setting-up-project skill to prepare the workspace before writing plans."
 
 <HARD-GATE>
-Do NOT invoke `forge:writing-plans` until all six steps in this skill are complete.
+Do NOT invoke `forge:writing-plans` until all five steps in this skill are complete.
 </HARD-GATE>
 
 
@@ -30,39 +30,94 @@ If the gate fails (exit code != 0):
 - Do NOT proceed until the gate passes.
 
 
-## Step 1 — Classify Risk
+## Step 1 — Risk and Execution Assessment
 
-Invoke `classify-risk` to determine the risk tier for this project:
+Classify risk AND evaluate team criteria together. Present the full picture to the user for confirmation.
+
+### 1a. Classify risk
+
+Invoke `classify-risk` to determine the risk tier:
 
 ```
 classify-risk <files-or-dirs-affected> --scope <task-count>
 ```
 
-`classify-risk` reads `policies/` and returns one of: `minimal`, `standard`, `elevated`, `critical`.
+### 1b. Evaluate team criteria
 
-Present the result to the user:
+Scan the design doc for task decomposition. Evaluate all three criteria:
+
+| Criterion | Threshold | Met? |
+|-----------|-----------|------|
+| Task count | 4+ distinct tasks | |
+| Independence | 2+ tasks can run in parallel | |
+| Specialist domains | 2+ distinct areas of expertise | |
+
+**Compose a team ONLY if ALL three criteria are met.** Otherwise proceed solo.
+
+### 1c. Present combined assessment
+
+Present everything together with justification, then ask for confirmation:
 
 ```
-Risk classification result:
-  Tier:      <tier>
-  Source:    <policy|inferred>
-  Strategy:  <solo|team-optional|team-recommended|team-required>
+Risk and Execution Assessment:
 
-Risk tier determines: ceremony level, worktree requirement, team requirement.
+  Files affected:  <list of dirs/files>
+  Scope:           <N> tasks
+  Risk tier:       <tier> (<reason — e.g., "no critical paths, small scope">)
+
+  Team criteria:
+    Task count:       <N> (<threshold met/not met>)
+    Independence:     <assessment>
+    Specialist domains: <N> — <list> (<threshold met/not met>)
+
+  Execution strategy: <solo|team> (<justification>)
+
+  Worktree: <recommendation based on tier>
+
+Does this assessment look correct, or would you like to override anything?
 ```
 
-Ask: "Does this classification look correct, or would you like to override it?"
+<HARD-GATE>
+Do NOT proceed without explicit user confirmation of the risk and execution assessment. The user must agree or override before state is written.
+</HARD-GATE>
 
-Accept override if provided. Record the source as `override` if changed.
+Accept overrides if provided. Record the source as `override` if changed.
 
-**Tier → execution strategy mapping:**
+**Tier → worktree mapping:**
 
-| Tier | Execution Strategy |
-|------|--------------------|
-| minimal | solo |
-| standard | team-optional |
-| elevated | team-recommended |
-| critical | team-required |
+| Tier | Worktree |
+|------|----------|
+| minimal | Not created (work directly on branch) |
+| standard | Optional (offer, default to no) |
+| elevated | Recommended (offer, default to yes) |
+| critical | Required |
+
+### 1d. If team execution
+
+Invoke `forge:composing-teams`. Do not design the roster yourself.
+
+`forge:composing-teams` must:
+1. Scan the `agents/` directory to discover available specialist agents
+2. Present the available agents to the user with recommended specialist-to-task mapping
+3. Recommend model tier per role (opus for architecture/complex, sonnet for implementation, haiku for mechanical)
+4. Propose team size based on the design's parallelism
+5. Get explicit user approval of the roster
+
+After the user approves, write the roster to state:
+```
+forge-state set team.roster "<approved roster JSON>" --project-dir .
+forge-state set team.decision team --project-dir .
+```
+
+<HARD-GATE>
+Do NOT proceed to `forge:writing-plans` until `forge:composing-teams` has run and `team.roster` is written to state. The lead must NEVER improvise team structure — the roster comes from composing-teams with user approval.
+</HARD-GATE>
+
+### 1e. If solo execution
+
+```
+forge-state set team.decision solo --project-dir .
+```
 
 
 ## Step 2 — Initialize State
@@ -87,23 +142,14 @@ State is stored in `.forge/local/` which is gitignored. It persists across sessi
 
 ## Step 3 — Worktree Setup
 
-Create an isolated worktree based on the risk tier.
+Create an isolated worktree based on the risk tier (from Step 1 assessment).
 
-**Worktree requirement by tier:**
+For **Required** tiers (critical): create the worktree now via `forge:using-git-worktrees`. Do not skip.
 
-| Tier | Worktree |
-|------|----------|
-| minimal | Not created (work directly on branch) |
-| standard | Optional (offer, default to no) |
-| elevated | Recommended (offer, default to yes) |
-| critical | Required |
-
-For **Required** tiers: create the worktree now via `forge:using-git-worktrees`. Do not skip.
-
-For **Recommended** tiers: ask the user:
+For **Recommended** tiers (elevated): ask the user:
 > "Elevated tier projects benefit from an isolated worktree. Create one now? (Recommended — default yes)"
 
-For **Optional** tiers: ask the user:
+For **Optional** tiers (standard): ask the user:
 > "Standard tier — a worktree is available if you want isolation. Create one? (default: no)"
 
 For **minimal** tiers: Do not create a worktree. Work directly on the current branch.
@@ -111,47 +157,7 @@ For **minimal** tiers: Do not create a worktree. Work directly on the current br
 After worktree creation, `forge:using-git-worktrees` writes `worktree.main.path` to state. Verify the path is accessible before continuing.
 
 
-## Step 4 — Team Decision
-
-Evaluate whether this project warrants a team. Apply the structured decision framework — do NOT compose a team based on intuition.
-
-| Criterion | Threshold | Met? |
-|-----------|-----------|------|
-| Task count | 4+ distinct tasks | |
-| Independence | 2+ tasks can run in parallel | |
-| Specialist domains | 2+ distinct areas of expertise | |
-
-**Compose a team ONLY if ALL three criteria are met.** Otherwise proceed solo.
-
-To evaluate, scan the design doc for task decomposition. If unclear, count the top-level implementation steps.
-
-**If composing a team:** invoke `forge:composing-teams`. Do not design the roster yourself.
-
-`forge:composing-teams` must:
-1. Scan the `agents/` directory to discover available specialist agents
-2. Present the available agents to the user with recommended specialist-to-task mapping
-3. Recommend model tier per role (opus for architecture/complex, sonnet for implementation, haiku for mechanical)
-4. Propose team size based on the design's parallelism
-5. Get explicit user approval of the roster
-
-After the user approves, write the roster to state:
-```
-forge-state set team.roster "<approved roster JSON>" --project-dir .
-forge-state set team.decision team --project-dir .
-```
-
-<HARD-GATE>
-Do NOT proceed to `forge:writing-plans` until `forge:composing-teams` has run and `team.roster` is written to state. The lead must NEVER improvise team structure — the roster comes from composing-teams with user approval.
-</HARD-GATE>
-
-**If going solo:** skip composing-teams entirely.
-
-```
-forge-state set team.decision solo --project-dir .
-```
-
-
-## Step 5 — Update Shared Docs
+## Step 4 — Update Shared Docs
 
 Update the shared documentation that downstream agents and implementers will reference.
 
@@ -173,7 +179,7 @@ Ensure these files exist in `.forge/shared/`:
 If these files already exist (re-run or re-adoption), update them in place. Do not lose existing content without reading it first.
 
 
-## Step 6 — Readiness Summary
+## Step 5 — Readiness Summary
 
 Present a summary before handing off to writing-plans:
 
@@ -203,35 +209,34 @@ On user confirmation, invoke `forge:writing-plans`.
 digraph setting_up_project {
     "Gate check: design.approved" [shape=diamond];
     "Gate fails: stop" [shape=box];
-    "Step 1: Classify risk\n(invoke classify-risk)" [shape=box];
-    "Present tier + strategy" [shape=box];
+    "Step 1: Risk + Team Assessment\n(classify-risk + team criteria)" [shape=box];
+    "Present combined assessment\nwith justification" [shape=box];
     "User confirms or overrides?" [shape=diamond];
-    "Step 2: forge-state init\nWrite phase, risk.tier, source, strategy" [shape=box];
-    "Step 3: Worktree?\n(tier-based)" [shape=diamond];
-    "Invoke forge:using-git-worktrees" [shape=box];
-    "Step 4: Team criteria?\n(4+ tasks, 2+ parallel, 2+ domains)" [shape=diamond];
+    "Team execution?" [shape=diamond];
     "Invoke forge:composing-teams" [shape=box];
     "Write team.decision=solo" [shape=box];
-    "Step 5: Update .forge/shared/\narchitecture.md + conventions.md" [shape=box];
-    "Step 6: Readiness summary" [shape=box];
+    "Step 2: forge-state init\nWrite phase, risk, strategy" [shape=box];
+    "Step 3: Worktree?\n(tier-based)" [shape=diamond];
+    "Invoke forge:using-git-worktrees" [shape=box];
+    "Step 4: Update .forge/shared/\narchitecture.md + conventions.md" [shape=box];
+    "Step 5: Readiness summary" [shape=box];
     "Invoke forge:writing-plans" [shape=doublecircle];
 
     "Gate check: design.approved" -> "Gate fails: stop" [label="fail"];
-    "Gate check: design.approved" -> "Step 1: Classify risk\n(invoke classify-risk)" [label="pass"];
-    "Step 1: Classify risk\n(invoke classify-risk)" -> "Present tier + strategy";
-    "Present tier + strategy" -> "User confirms or overrides?" ;
-    "User confirms or overrides?" -> "Step 2: forge-state init\nWrite phase, risk.tier, source, strategy" [label="confirmed"];
-    "User confirms or overrides?" -> "Step 2: forge-state init\nWrite phase, risk.tier, source, strategy" [label="override accepted"];
-    "Step 2: forge-state init\nWrite phase, risk.tier, source, strategy" -> "Step 3: Worktree?\n(tier-based)";
+    "Gate check: design.approved" -> "Step 1: Risk + Team Assessment\n(classify-risk + team criteria)" [label="pass"];
+    "Step 1: Risk + Team Assessment\n(classify-risk + team criteria)" -> "Present combined assessment\nwith justification";
+    "Present combined assessment\nwith justification" -> "User confirms or overrides?";
+    "User confirms or overrides?" -> "Team execution?" [label="confirmed"];
+    "Team execution?" -> "Invoke forge:composing-teams" [label="team"];
+    "Team execution?" -> "Write team.decision=solo" [label="solo"];
+    "Invoke forge:composing-teams" -> "Step 2: forge-state init\nWrite phase, risk, strategy";
+    "Write team.decision=solo" -> "Step 2: forge-state init\nWrite phase, risk, strategy";
+    "Step 2: forge-state init\nWrite phase, risk, strategy" -> "Step 3: Worktree?\n(tier-based)";
     "Step 3: Worktree?\n(tier-based)" -> "Invoke forge:using-git-worktrees" [label="required / recommended+yes"];
-    "Step 3: Worktree?\n(tier-based)" -> "Step 4: Team criteria?\n(4+ tasks, 2+ parallel, 2+ domains)" [label="optional / declined"];
-    "Invoke forge:using-git-worktrees" -> "Step 4: Team criteria?\n(4+ tasks, 2+ parallel, 2+ domains)";
-    "Step 4: Team criteria?\n(4+ tasks, 2+ parallel, 2+ domains)" -> "Invoke forge:composing-teams" [label="ALL three met"];
-    "Step 4: Team criteria?\n(4+ tasks, 2+ parallel, 2+ domains)" -> "Write team.decision=solo" [label="any criterion missing"];
-    "Invoke forge:composing-teams" -> "Step 5: Update .forge/shared/\narchitecture.md + conventions.md";
-    "Write team.decision=solo" -> "Step 5: Update .forge/shared/\narchitecture.md + conventions.md";
-    "Step 5: Update .forge/shared/\narchitecture.md + conventions.md" -> "Step 6: Readiness summary";
-    "Step 6: Readiness summary" -> "Invoke forge:writing-plans";
+    "Step 3: Worktree?\n(tier-based)" -> "Step 4: Update .forge/shared/\narchitecture.md + conventions.md" [label="optional / declined"];
+    "Invoke forge:using-git-worktrees" -> "Step 4: Update .forge/shared/\narchitecture.md + conventions.md";
+    "Step 4: Update .forge/shared/\narchitecture.md + conventions.md" -> "Step 5: Readiness summary";
+    "Step 5: Readiness summary" -> "Invoke forge:writing-plans";
 }
 ```
 
