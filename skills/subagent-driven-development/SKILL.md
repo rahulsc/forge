@@ -141,7 +141,7 @@ forge-evidence add <task-id> <artifact>
 
 This persists the evidence in `.forge/local/` so it survives session boundaries and can be audited later.
 
-**TDD gate:** Before marking implementation complete, verify RED evidence (test fails for right reason) then GREEN evidence (test passes). Both must exist. TDD is required at standard+ tiers; optional at minimal tier. See `forge:test-driven-development` for Solo TDD mode details.
+**TDD gate:** Before marking implementation complete, verify RED evidence (test fails for right reason) then GREEN evidence (test passes). Both must exist. TDD is required at standard+ tiers; optional at minimal tier. See `forge:test-driven-development` for Solo TDD mode details. Tasks marked `Tests: N/A` (documentation-only, no testable code) skip TDD — but this is not a free pass for code tasks.
 
 **Rejection rule:** Any completion report missing command + diff evidence is rejected: "Missing evidence. Required: command (test output) + diff (commit SHA)."
 

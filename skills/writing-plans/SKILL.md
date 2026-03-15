@@ -202,7 +202,12 @@ One sentence.
 
 ## Plan-Level Test Expectations
 
-Every task MUST include test expectations. This is not optional.
+Every task that produces testable code or verifiable behavior MUST include test expectations. This is not optional.
+
+Tasks that are purely documentation, configuration, or prompt edits may note:
+`Tests: N/A — documentation-only task`
+
+This is NOT a free pass to skip tests for code changes. If a task produces testable code or verifiable behavior, test expectations are mandatory.
 
 **What to specify:**
 - The behavior being tested (not the test code)

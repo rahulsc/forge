@@ -339,6 +339,15 @@ When a task has no `complexity` field, default to **standard**.
 
 **Pipelined TDD enforcement:** If QA wrote tests for this wave, verify each implementer's completion report includes both RED evidence (QA's test failed before implementation) and GREEN evidence (test passes after). Reject reports missing either.
 
+**Solo TDD fallback:** If the plan includes tasks with test expectations but no QA agent is in the roster, the implementer follows solo TDD:
+1. Write failing test based on plan's test expectations
+2. Verify test fails (RED evidence)
+3. Implement to make test pass
+4. Verify test passes (GREEN evidence)
+5. Refactor if needed while keeping tests green
+
+This applies wherever testable code or verifiable behavior exists. Tasks marked `Tests: N/A` (documentation-only) skip TDD.
+
 **Staggered reviews within a wave:** While implementer-2 is still coding, implementer-1's completed task can already be under review.
 
 **Between waves:**
