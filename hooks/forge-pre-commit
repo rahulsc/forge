@@ -149,8 +149,23 @@ for artifact in "${REQUIRED_ARR[@]}"; do
     fi
 done
 
+GATE_RESULT="success"
 if [ "${#MISSING[@]}" -eq 0 ]; then
+    # Audit: record gate check
+    if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-audit" ]; then
+        if "$FORGE_BIN/forge-state" get audit.enabled --project-dir "$PROJECT_DIR" 2>/dev/null | grep -q "true"; then
+            "$FORGE_BIN/forge-audit" record --type gate_check --outcome "$GATE_RESULT" 2>/dev/null || true
+        fi
+    fi
     exit 0
+fi
+
+GATE_RESULT="blocked"
+# Audit: record gate check (blocked)
+if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-audit" ]; then
+    if "$FORGE_BIN/forge-state" get audit.enabled --project-dir "$PROJECT_DIR" 2>/dev/null | grep -q "true"; then
+        "$FORGE_BIN/forge-audit" record --type gate_check --outcome "$GATE_RESULT" 2>/dev/null || true
+    fi
 fi
 
 printf 'Forge PreCommit BLOCKED: staged files require tier "%s" evidence for task "%s"\n' "$TIER" "$TASK_ID"

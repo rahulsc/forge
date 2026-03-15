@@ -100,4 +100,11 @@ cat <<EOF
 }
 EOF
 
+# Audit: record session start
+if [ -n "$FORGE_BIN" ] && [ -x "$FORGE_BIN/forge-state" ] && [ -x "$FORGE_BIN/forge-audit" ]; then
+    if "$FORGE_BIN/forge-state" get audit.enabled --project-dir "$PROJECT_DIR" 2>/dev/null | grep -q "true"; then
+        "$FORGE_BIN/forge-audit" record --type session_start --host "${CLAUDE_HOST:-unknown}" 2>/dev/null || true
+    fi
+fi
+
 exit 0
