@@ -113,7 +113,7 @@ what you want -- Forge routes to the right skills automatically.
 
 ### Skill Flow
 
-Forge ships 21 skills organized into five categories: routing, design,
+Forge ships 22 skills organized into five categories: routing, design,
 execution, verification, and meta. Skills compose into pipelines -- the router
 selects the right entry point, and each skill hands off to the next based on
 workflow phase.
@@ -305,7 +305,7 @@ These live at the top level of the Forge repository:
 |-----------|---------|
 | `bin/` | Runtime tools: `classify-risk`, `forge-evidence`, `forge-memory`, `forge-state`, `forge-pack` |
 | `policies/` | Risk classification rules (`default.yaml`) |
-| `skills/` | The 21 skills that define Forge workflows |
+| `skills/` | The 22 skills that define Forge workflows |
 | `agents/` | Specialist agent definitions for multi-agent teams |
 | `hooks/` | Session lifecycle hooks (e.g., `forge-session-start`) |
 | `workflows/` | Multi-step workflow definitions (declarative YAML) |
