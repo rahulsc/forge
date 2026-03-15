@@ -1,0 +1,29 @@
+name: auth-service
+inspired_by: "Auth0 / Clerk (core auth layer)"
+version_introduced: v0.4.1
+
+ideation: |
+  Build the authentication backbone for a SaaS product. Users need signup, login, token refresh, and logout. The system needs role-based access control with admin, editor, and viewer roles. Security is paramount — passwords must be hashed properly, tokens must expire, and the API must defend against common auth attacks. No OAuth, no MFA, no social login — just the core credential and session layer.
+
+starting_state: empty_directory
+project_directory: ~/Projects/forge-ref-projects/auth-service
+
+expectations:
+  risk_tiers: [critical]
+  workflows: [adopt_repo, start_feature, refactor_safely]
+  agents: [security-reviewer, backend-engineer, architect, qa-engineer]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null

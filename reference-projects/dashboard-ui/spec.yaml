@@ -1,0 +1,29 @@
+name: dashboard-ui
+inspired_by: "Grafana / Datadog dashboard view"
+version_introduced: v0.4.1
+
+ideation: |
+  Build the frontend shell for a monitoring dashboard. Operators need a sidebar to navigate between views, a responsive card grid to display metrics, and a dark mode toggle that persists across sessions. This is the layout and navigation layer only — no real data sources, no charting libraries, no WebSocket connections.
+
+starting_state: empty_directory
+project_directory: ~/Projects/forge-ref-projects/dashboard-ui
+
+expectations:
+  risk_tiers: [minimal, standard]
+  workflows: [adopt_repo, start_feature, review_change]
+  agents: [frontend-engineer, qa-engineer, code-reviewer]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null

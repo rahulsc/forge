@@ -1,0 +1,29 @@
+name: full-stack-notes-app
+inspired_by: "Notion / Apple Notes (minimal version)"
+version_introduced: v0.4.1
+
+ideation: |
+  Build a complete note-taking app from frontend to deployment. Users need to create, read, update, and delete notes with a clean UI. The app needs a React frontend, an Express API, and SQLite for storage. This project exercises the full Forge lifecycle: feature development, bug fixing, refactoring, code review, cold-start resume, release preparation, and incident investigation. No collaboration features, no rich text editing, no file attachments — just the core CRUD experience end-to-end.
+
+starting_state: empty_directory
+project_directory: ~/Projects/forge-ref-projects/full-stack-notes-app
+
+expectations:
+  risk_tiers: [minimal, standard, elevated, critical]
+  workflows: [adopt_repo, start_feature, fix_bug, refactor_safely, review_change, resume, release, investigate_incident]
+  agents: [frontend-engineer, backend-engineer, database-specialist, devops-engineer, security-reviewer, architect, qa-engineer, code-reviewer]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null

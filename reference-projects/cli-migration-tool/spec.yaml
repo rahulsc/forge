@@ -1,0 +1,29 @@
+name: cli-migration-tool
+inspired_by: "Flyway / golang-migrate"
+version_introduced: v0.4.1
+
+ideation: |
+  Build a database migration CLI that developers run locally and in CI. It needs to discover migration files by convention, track which have been applied via a version table, support up/down/status/seed commands, and handle rollback safely. Data integrity on rollback is critical — a failed down migration must not leave the database in an inconsistent state. No ORM integration, no cloud database support.
+
+starting_state: empty_directory
+project_directory: ~/Projects/forge-ref-projects/cli-migration-tool
+
+expectations:
+  risk_tiers: [elevated, critical]
+  workflows: [adopt_repo, start_feature, fix_bug]
+  agents: [database-specialist, implementer, qa-engineer]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null

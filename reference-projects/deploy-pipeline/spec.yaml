@@ -1,0 +1,29 @@
+name: deploy-pipeline
+inspired_by: "Vercel / Railway deploy flow"
+version_introduced: v0.4.1
+
+ideation: |
+  Add containerized local development and CI/CD to an existing Node.js app that currently has no deployment story. Developers need docker-compose for local dev, and the team needs a GitHub Actions pipeline that lints, tests, builds, and produces a deployable artifact. The pipeline must handle secrets safely. No actual cloud deployment — just the pipeline and container setup.
+
+starting_state: provided_skeleton
+project_directory: ~/Projects/forge-ref-projects/deploy-pipeline
+
+expectations:
+  risk_tiers: [elevated, critical]
+  workflows: [adopt_repo, start_feature, investigate_incident]
+  agents: [devops-engineer, security-reviewer, architect]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null

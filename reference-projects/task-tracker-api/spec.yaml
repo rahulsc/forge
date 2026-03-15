@@ -1,0 +1,29 @@
+name: task-tracker-api
+inspired_by: "Linear / Asana"
+version_introduced: v0.4.1
+
+ideation: |
+  Build the MVP backend for a project management tool. Teams need to create workspaces, track tasks with priorities and assignees, and authenticate via tokens. The API should be clean enough that a frontend team could build against it. Focus on the core task lifecycle — no integrations, no real-time updates, no notifications.
+
+starting_state: empty_directory
+project_directory: ~/Projects/forge-ref-projects/task-tracker-api
+
+expectations:
+  risk_tiers: [standard, elevated]
+  workflows: [adopt_repo, start_feature, fix_bug]
+  agents: [backend-engineer, qa-engineer, security-reviewer]
+
+metrics:
+  compiles: null
+  tests_pass: null
+  test_count: null
+  deviation_count: null
+  tdd_compliance: null
+  skills_invoked: []
+  duration_minutes: null
+  total_tokens: null
+  token_cost_usd: null
+  gate_pass_rate: null
+  agents_dispatched: []
+
+baseline: null
