@@ -1,5 +1,5 @@
 ---
-name: analyzing-audit
+name: analyze-audit
 description: Analyze Forge workflow deviations, git history, and audit data to identify improvement patterns. Use when reviewing how a project went, analyzing deviations, or running a retrospective.
 ---
 

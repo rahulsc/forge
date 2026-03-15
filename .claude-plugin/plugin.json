@@ -1,7 +1,7 @@
 {
   "name": "forge",
   "description": "Structured operating mode for AI-assisted development — risk-scaled ceremony, evidence-gated completion, multi-agent teams",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "Rahul Singh Chauhan"
   },

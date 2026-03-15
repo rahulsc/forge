@@ -1,5 +1,18 @@
 # Forge Release Notes
 
+## v0.3.1 (2026-03-14)
+
+### Audit Analysis + Fixes
+
+- **`forge:analyze-audit` skill** — reads deviation logs and git history to produce analysis reports with prioritized improvement recommendations
+- **README agent roster** — updated from 5 to 10 agents
+- **TDD enforcement** — mandatory where testable work exists, `Tests: N/A` for documentation-only tasks, solo TDD fallback when no QA agent
+- **Setting-up-project** — merged risk + team into single Step 1 with justification and HARD-GATE user confirmation
+- **Plan task table format** — `Depends On` + `Verify` columns replace undefined `complexity` column
+- **Deviation worklog** — 10 of 11 deviations marked fixed
+
+---
+
 ## v0.3.0 (2026-03-14)
 
 ### Adoption, Agents, and Execution
