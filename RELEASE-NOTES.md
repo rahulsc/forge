@@ -1,5 +1,40 @@
 # Forge Release Notes
 
+## v0.4.0 (2026-03-15)
+
+### Audit Infrastructure (TDD Milestone)
+
+The first version built with test-driven development — tests written before implementation.
+
+#### bin/forge-audit (TDD)
+- New CLI tool for JSONL event recording (165 lines)
+- 5 test scripts written first (RED), implementation made them pass (GREEN) — 37/37 assertions
+- Events: session_start, skill_enter, skill_exit, gate_check, task_completion, routing_decision
+- Opt-in via `.forge/project.yaml` (`audit.enabled: true`) — default off, no overhead when disabled
+
+#### Hook Integration
+- `forge-session-start` records session_start events
+- `forge-task-completed` records task_completion events
+- `forge-pre-commit` records gate_check events with pass/fail outcome
+- All audit calls are best-effort (`|| true`) — never block hook execution
+
+#### Brainstorming Audit Opt-In
+- Brainstorming skill asks "Enable audit mode?" once per project (default: no)
+- Stored in forge-state, not re-asked on subsequent sessions
+
+#### analyze-audit Upgrade
+- Now reads JSONL audit files alongside manual deviation logs
+- New dimensions: token cost per skill, token cost per workflow, gate pass rate, session duration
+- Cost Analysis section in reports when JSONL data available
+
+#### Audit Findings Fixes
+- HARD-GATEs added to verification-before-completion, finishing-a-development-branch, composing-teams
+- Wave compliance step renumbered from 3.5 to proper step 4 in agent-team-driven-development
+- Deviation #3 closed — all 11 Beta deviations now resolved
+- README skill count corrected to 22
+
+---
+
 ## v0.3.1 (2026-03-14)
 
 ### Audit Analysis + Fixes
