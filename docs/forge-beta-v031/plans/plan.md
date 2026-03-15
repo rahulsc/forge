@@ -9,9 +9,9 @@ risk_tier: standard
 > **Risk tier:** standard — goal + tasks + test expectations required
 > **For Claude:** Use `forge:subagent-driven-development` to execute this plan.
 
-**Goal:** Add the `forge:analyzing-audit` skill for manual deviation analysis, fix README agent roster, enforce TDD where applicable, merge risk/team steps in setting-up-project, and update deviation statuses.
+**Goal:** Add the `forge:analyzing-audit` skill, fix README agent roster, enforce TDD where applicable, merge risk/team steps in setting-up-project, update plan task table format in writing-plans, update deviation statuses, and bump version.
 
-**Architecture:** 1 new skill (analyzing-audit), 3 skill text updates (writing-plans, agent-team-driven-development/subagent-driven-development, setting-up-project), 1 README edit, 1 deviation log update, version bump. All markdown edits.
+**Architecture:** 1 new skill (analyzing-audit), 4 skill text updates (writing-plans, agent-team-driven-development, subagent-driven-development, setting-up-project), 1 README edit, 1 deviation log update, version bump. All markdown edits.
 
 **Tech Stack:** Markdown
 
@@ -21,12 +21,15 @@ risk_tier: standard
 
 ## Tasks
 
-1. Task 1: Create `forge:analyzing-audit` skill
-2. Task 2: Update README agent roster (5 → 10)
-3. Task 3: TDD enforcement in writing-plans and execution skills
-4. Task 4: Merge risk/team steps in setting-up-project (deviations #10, #11)
-5. Task 5: Update deviation worklog statuses
-6. Task 6: Version bump to 0.3.1
+| # | Task | Depends On | Verify |
+|---|------|-----------|--------|
+| 1 | Create `forge:analyzing-audit` skill | — | grep: frontmatter exists, routing entry exists |
+| 2 | Update README agent roster (5→10) | — | grep: forge-author in roster table |
+| 3 | TDD enforcement in execution skills | — | grep: N/A guidance, solo TDD fallback |
+| 4 | Merge risk/team steps in setting-up-project | — | grep: team criteria in Step 1 |
+| 5 | Update plan task table format in writing-plans | — | grep: Depends On and Verify columns in template |
+| 6 | Update deviation worklog statuses | 1-5 | grep: no stale "open" entries |
+| 7 | Version bump to 0.3.1 | 1-6 | grep: version 0.3.1 in manifests |
 
 ---
 
@@ -248,9 +251,67 @@ Update the process flow diagram, State Written section, and Integration section 
 
 ---
 
-## Task 5: Update Deviation Worklog Statuses
+## Task 5: Update Plan Task Table Format in writing-plans
 
-**Depends on:** Tasks 1-4 (need to know what was fixed)
+**Depends on:** None
+**Produces:** Updated writing-plans SKILL.md with new task summary table format
+**Complexity:** standard
+
+### Goal
+
+Replace the old `complexity` column in the plan task summary table with `Depends On` and `Verify` columns. Add a legend. Document cost-per-task column as a v1.0 enhancement.
+
+### Acceptance Criteria
+
+- [ ] Plan task summary table template in writing-plans uses `| # | Task | Depends On | Verify |` format
+- [ ] Old `complexity` column (mechanical/standard/complex) removed from the summary table template
+- [ ] Legend added explaining Verify values: `grep` (pattern match), `test` (run test suite), `review` (manual review), `N/A` (not applicable)
+- [ ] Note added: "Future enhancement (v1.0): add cost-per-task column once audit cost tracking is available"
+- [ ] The review tier table in agent-team-driven-development still uses complexity for review depth decisions — that stays separate
+
+### Test Expectations
+
+- **Test:** grep for "Depends On" in writing-plans plan.md template section
+- **Expected red failure:** template uses old complexity column
+- **Expected green:** template uses Depends On and Verify columns
+
+### Files
+
+- Modify: `skills/writing-plans/SKILL.md` (plan.md template section and Test Expectations Summary table)
+
+### Implementation Notes
+
+The `complexity` field (mechanical/standard/complex) still serves a purpose in `agent-team-driven-development` for determining review depth. Don't remove it from there. Only update the plan summary table template in writing-plans.
+
+Replace the current summary table template:
+```
+| Task | What to test | Expected red failure |
+```
+
+With:
+```
+| # | Task | Depends On | Verify |
+```
+
+Add a legend:
+```
+**Verify legend:** `grep` = pattern match confirms change; `test` = run test suite; `review` = manual review; `N/A` = not verifiable (documentation only)
+```
+
+Add a future enhancement note near the summary table:
+```
+> Future enhancement (v1.0): add estimated cost column once audit cost tracking provides per-task baselines.
+```
+
+### Commit
+
+`fix: update plan task table format — replace complexity with Depends On + Verify columns`
+
+---
+
+## Task 6: Update Deviation Worklog Statuses
+
+**Depends on:** Tasks 1-5 (need to know what was fixed)
 **Produces:** Updated deviation statuses in design-v3.md Appendix G
 **Complexity:** mechanical
 
@@ -283,9 +344,9 @@ Update all deviation entries to reflect their current status accurately.
 
 ---
 
-## Task 6: Version Bump to 0.3.1
+## Task 7: Version Bump to 0.3.1
 
-**Depends on:** Tasks 1-5
+**Depends on:** Tasks 1-6
 **Produces:** v0.3.1 in all manifests, release notes
 **Complexity:** mechanical
 
@@ -321,13 +382,12 @@ Bump to 0.3.1, write release notes.
 
 ## Test Expectations Summary
 
-| Task | What to test | Expected red failure |
-|------|-------------|----------------------|
-| 1 | analyzing-audit skill exists with frontmatter | File doesn't exist |
-| 1 | forge-routing has "audit" route | No audit route |
-| 2 | README lists forge-author in agent roster | Only 5 agents listed |
-| 3 | writing-plans allows `Tests: N/A` for docs tasks | No N/A guidance |
-| 3 | execution skills have solo TDD fallback | No solo TDD check |
-| 4 | Team criteria table in Step 1, not Step 4 | Team criteria in Step 4 |
-| 5 | Deviation worklog shows fixed entries | Multiple entries still "open" |
-| 6 | Plugin manifests show 0.3.1 | Manifests show 0.3.0 |
+| # | Task | Depends On | Verify |
+|---|------|-----------|--------|
+| 1 | analyzing-audit skill | — | grep: frontmatter exists, routing entry exists |
+| 2 | README agent roster | — | grep: forge-author in roster table |
+| 3 | TDD enforcement | — | grep: N/A guidance, solo TDD fallback |
+| 4 | Merge risk/team steps | — | grep: team criteria in Step 1 |
+| 5 | Plan task table format | — | grep: Depends On and Verify in template |
+| 6 | Deviation worklog | 1-5 | grep: no stale "open" entries |
+| 7 | Version bump | 1-6 | grep: version 0.3.1 in manifests |
