@@ -354,13 +354,16 @@ This applies wherever testable code or verifiable behavior exists. Tasks marked 
 1. All tasks in current wave must pass both reviews before starting next wave
 2. Squash-merge all implementer worktree branches into main worktree (see Merge Strategy)
 3. Verify integration by running tests on merged result
-3.5. **Wave validation (elevated/critical tiers):** Dispatch `forge:validating-wave-compliance` to verify cross-task consistency, evidence completeness, and integration health before proceeding. At elevated tier, this is advisory; at critical tier, failures block the next wave.
-4. **Run Wave Cleanup Routine** — mark tasks complete, clean sub-tasks, verify no stale state, post status summary
-5. **If QA in roster:** Have QA agent write tests for next+1 wave's tasks in the lead's worktree (e.g., while Wave 2 implementers work, QA writes tests for Wave 3). This keeps the pipeline flowing — implementers always have pre-written tests waiting.
-6. Aggregate wave evidence: `forge-evidence add wave-<N> command "<merged test results>"` and `forge-evidence add wave-<N> diff "<merge commit SHA + stat>"`
-7. Update `forge-state set plan.current_wave <N+1>`
-8. Check context remaining; run `/compact` if below 50%
-9. Message existing implementers with next wave's tasks + context from previous waves. **If QA wrote tests:** include the test file paths so implementers run them RED before implementing.
+4. **Wave validation (elevated/critical tiers):** Invoke `forge:validating-wave-compliance`.
+   Provide the completed wave's task list and design doc path.
+   - **Elevated tier:** failures are advisory (note and proceed)
+   - **Critical tier:** failures BLOCK the next wave — do not proceed until resolved
+5. **Run Wave Cleanup Routine** — mark tasks complete, clean sub-tasks, verify no stale state, post status summary
+6. **If QA in roster:** Have QA agent write tests for next+1 wave's tasks in the lead's worktree (e.g., while Wave 2 implementers work, QA writes tests for Wave 3). This keeps the pipeline flowing — implementers always have pre-written tests waiting.
+7. Aggregate wave evidence: `forge-evidence add wave-<N> command "<merged test results>"` and `forge-evidence add wave-<N> diff "<merge commit SHA + stat>"`
+8. Update `forge-state set plan.current_wave <N+1>`
+9. Check context remaining; run `/compact` if below 50%
+10. Message existing implementers with next wave's tasks + context from previous waves. **If QA wrote tests:** include the test file paths so implementers run them RED before implementing.
 
 ### Phase 3: Completion
 

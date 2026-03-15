@@ -84,6 +84,19 @@ digraph brainstorming {
 - Search for existing solutions before designing new ones
 - Assess scope: flag multi-subsystem requests early and help decompose before asking detailed questions
 
+**Audit opt-in (ask once per project):**
+
+Check first: `forge-state get audit.enabled` — if already set (true or false), skip this question.
+
+If not set, ask:
+> "Would you like to enable audit mode for this project? Audit records
+> workflow events (skill usage, gate checks, token counts) to
+> `.forge/local/audit/` for later analysis with `forge:analyze-audit`.
+> Default: no"
+
+If yes: `forge-state set audit.enabled true`
+If no (or skipped): do nothing — audit stays disabled by default.
+
 **Step 2 — Offer visual companion:**
 - When visual questions are ahead, offer the companion once for consent
 - This offer MUST be its own message — do not combine with any other content
