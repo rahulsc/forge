@@ -137,18 +137,17 @@ risk_tier: <minimal|standard|elevated|critical>
 
 ## Tasks
 
-1. Task 1: [Title]
-2. Task 2: [Title]
-3. Task 3: [Title]
+| # | Task | Depends On | Verify |
+|---|------|-----------|--------|
+| 1 | [Title] | — | [how to verify: grep, test, review, N/A] |
+| 2 | [Title] | — | [verification method] |
+| 3 | [Title] | 1 | [verification method] |
+
+**Verify legend:** `grep` = pattern match confirms change; `test` = run test suite; `review` = manual review; `N/A` = not verifiable (documentation only)
+
+> Future enhancement (v1.0): add estimated cost column once audit cost tracking provides per-task baselines.
 
 [Wave analysis if team plan — see below]
-
-## Test Expectations Summary
-
-| Task | What to test | Expected red failure |
-|------|-------------|----------------------|
-| 1 | [behavior] | [specific error message or missing symbol] |
-| 2 | [behavior] | [specific error message or missing symbol] |
 ```
 
 **Write the header last.** Why: the header includes the execution approach recommendation (serial vs. team), which you cannot know until you have:
