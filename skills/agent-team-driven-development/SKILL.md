@@ -288,6 +288,18 @@ digraph agent_team {
 ### Phase 1: Plan Analysis & Team Setup
 
 1. **Read `.forge/` state** — if resuming, `forge-state get plan.current_wave` and `forge-state get plan.completed_tasks`, skip to current wave
+1b. **Approval manifest (if available):** Check for `approvals.yaml` in the project directory. If found:
+   - Read the manifest
+   - Present to user:
+     > "This project has pre-defined permissions:
+     >
+     > **File operations:** [create/edit patterns from manifest]
+     > **Shell commands:** [allowed commands]
+     > **Agent operations:** [spawn types]
+     >
+     > Approve these for this run? Only unexpected operations will prompt."
+   - If approved, note in context that listed operations are pre-approved
+   - If declined or no manifest found, proceed with normal per-operation approval
 2. **Read plan** once, extract every task with full description
 3. **Analyze dependencies** between tasks (see Dependency Analysis below)
 4. **Group into waves** — tasks in same wave must be independent and not touch same files
