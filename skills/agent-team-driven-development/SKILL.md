@@ -186,27 +186,40 @@ Wave Cleanup Routine:
 
 ## Status Reporting
 
-Post status updates at two points during execution. This is a text convention — no special tooling needed.
+Display task status after each major action (task completion, agent spawn, between waves) and every 30 seconds if no other output. Use this format consistently:
 
-**After each task completion** — post a per-wave status showing which tasks in the current wave are done vs still in progress:
-
+**Header:**
 ```
-Wave 1 Status:
-  T3 [done]  restructurer — project restructure (commit 0d585c8)
-  T4 [WIP]   metadata-agent — repo metadata
-  T5 [WIP]   readme-writer — README rewrite
+**<Project Name>** — <N>/<Total> tasks | <N>/<N> tests implemented | <N>/<N> passing
 ```
 
-**Between waves** (as part of Wave Cleanup Routine step 7) — post a full progress summary:
-
+**Wave-grouped body:**
 ```
-Progress: 3/7 tasks complete (Waves 0-1 done, starting Wave 2)
-  T1 [done] T2 [done] T3 [done]
-  T4 [next] T5 [next] T6 [next]
-  T7 [blocked by T4,T5,T6]
+ ● ✅ Wave 0: <description> (<N>/<N> tests passing)
+ ● ✅ Wave 1: <description> (<N>/<N> tests passing)
+
+ ● 🔄 Wave 2: <description>
+    • ⏳ T<N>  <agent-name> — <task> (tests: <N> RED | <N>/<N> GREEN)
+
+ ● ⏭️ Wave 3: <description>
+    • ◻️ T<N>  — <task>
 ```
 
-These summaries make multi-agent execution visible at a glance.
+**Icons:**
+- ● = wave bullet, • = task bullet
+- ✅ = completed, 🔄 = active, ⏭️ = upcoming wave
+- ⏳ = task in progress, ◻️ = upcoming task
+
+**In-progress task test status cycles through:**
+- `(tests: pending RED)` — tests not written yet
+- `(tests: <N> RED)` — tests written, failing as expected
+- `(tests: <N>/<N> GREEN)` — implementation done, tests passing
+
+**When to display:**
+- After each task completion
+- After each agent spawn
+- Between waves (as part of Wave Cleanup Routine step 7)
+- Every 30 seconds if no other output (nudge the user that work is ongoing)
 
 ## Pre-Flight Context Check
 
