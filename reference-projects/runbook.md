@@ -141,6 +141,15 @@ During each reference project run, note any skill outputs that could benefit fro
 - Status summaries without structure
 - Unclear prompts or confusing output
 
+## Permission Tracking
+
+During each reference project run, agents should log the permissions they needed:
+- File operations: create, edit, delete (which paths)
+- Shell commands: npm install, npm test, git commit, etc.
+- Git operations: commit, branch, push
+
+This data feeds into the controlled auto mode permission manifest design (v0.5.0). After several runs, we'll have enough data to build a pre-approved permission set that covers common operations without requiring manual approval.
+
 ## What NOT to Do
 
 - Don't pre-design the project — let brainstorming do it
