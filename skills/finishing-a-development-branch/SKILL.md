@@ -291,6 +291,25 @@ done
 - Clean `.forge/local/` evidence after finish
 - Clean up worktree for Options 1, 2 & 4
 
+## User Validation
+
+If a `validation.md` file exists in the project directory:
+
+1. Read the validation checklist
+2. Present each check to the user with the commands to run
+3. Offer: "Want me to run these validation checks? (y/n)"
+4. If yes, run each automated check (curl commands, test commands) and report pass/fail per check
+5. If no, present the checklist for manual verification by the user
+6. Record pass/fail results in the run output
+
+<HARD-GATE>
+Do NOT proceed to merge/PR/cleanup until either:
+- All validation checks pass, OR
+- User explicitly acknowledges failures and approves proceeding
+</HARD-GATE>
+
+If no `validation.md` exists, skip this step.
+
 ## Closeout Cleanup
 
 Before finishing:
