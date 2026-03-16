@@ -1,0 +1,63 @@
+# Pre-approved permissions for Task Tracker API reference project run
+# Show this to the user at the start of every run. User approves once.
+# Only genuinely new/unexpected requests prompt during the run.
+
+project: task-tracker-api
+forge_version_introduced: v0.4.2
+
+# File operations within the reference project directory
+file_operations:
+  base_path: reference-projects/task-tracker-api/
+  create:
+    - "package.json"
+    - "src/**/*.js"
+    - "tests/**/*.js"
+    - "docs/**/*.md"
+    - ".forge/local/**"
+    - "runs/*.md"
+  edit:
+    - "src/**/*.js"
+    - "tests/**/*.js"
+    - "package.json"
+  delete: false  # never pre-approved
+
+# Shell commands
+shell_commands:
+  allowed:
+    - "npm install"
+    - "npm test"
+    - "node src/index.js"  # for manual verification
+    - "curl *"  # for endpoint testing
+    - "git add *"
+    - "git commit *"
+    - "git status"
+    - "git diff *"
+    - "git log *"
+    - "ls *"
+    - "cat *"
+    - "mkdir *"
+    - "bin/forge-state *"
+    - "bin/forge-audit *"
+  denied:
+    - "rm -rf *"
+    - "sudo *"
+    - "git push *"
+    - "git reset --hard *"
+
+# Agent operations
+agent_operations:
+  spawn: true
+  allowed_types:
+    - "forge:backend-engineer"
+    - "forge:qa-engineer"
+    - "forge:security-reviewer"
+    - "forge:implementer"
+    - "forge:code-reviewer"
+  max_concurrent: 3
+  shutdown: structured_only  # never plain text
+
+# Git operations
+git_operations:
+  commit: true  # in worktree only
+  branch: false  # worktree handles this
+  push: false  # never during reference project run
