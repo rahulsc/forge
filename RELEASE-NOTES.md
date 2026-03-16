@@ -1,5 +1,20 @@
 # Forge Release Notes
 
+## v0.4.2 (2026-03-16)
+
+### Reference Project Infrastructure Fixes
+
+Fixes 4 blockers from the failed v0.4.1 reference project run:
+
+- **Audit recording in agent prompts** — agents call `bin/forge-audit record` at task start/end. Lead records wave_completion between waves. All calls best-effort.
+- **Approval manifest** — `agent-team-driven-development` reads `approvals.yaml` at execution start for one-time approval.
+- **Validation checklist** — `finishing-a-development-branch` reads `validation.md` with HARD-GATE preventing completion without validation.
+- **Results process** — runbook documents: deviations to main immediately, results cherry-picked, worktree deleted.
+- **Task list formatting** — wave-grouped format with icons (✅ 🔄 ⏭️ ⏳ ◻️), test counts, 30s timer refresh.
+- Deviations #15, #17-20 fixed.
+
+---
+
 ## v0.4.1 (2026-03-15)
 
 ### Agent Shutdown Fix + Reference Project Infrastructure
