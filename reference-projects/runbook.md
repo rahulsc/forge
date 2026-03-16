@@ -22,6 +22,12 @@ reference-projects/
 
 Projects run IN-REPO as subfolders. Each has its own `.forge/project.yaml` so Forge state resolves locally (not to the repo root). Generated code, node_modules, etc. are gitignored — only specs, measurement scripts, and run results are tracked.
 
+## Execution Context
+
+**Reference projects run from the root Forge repo session.** You do NOT need a separate Claude Code session. The lead works in the reference project subfolder (e.g., `reference-projects/task-tracker-api/`) and all Forge state resolves locally via `.forge/project.yaml` in that subfolder.
+
+This was decided during v0.4.1 development — separate sessions add unnecessary friction and copy-paste overhead across 6 projects per version.
+
 ## How State Isolation Works
 
 Forge's session hook walks up from `pwd` looking for `.forge/project.yaml`. The nearest one wins:
