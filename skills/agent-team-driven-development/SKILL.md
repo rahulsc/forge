@@ -417,6 +417,24 @@ Before marking the plan complete, review all completed tasks together for cross-
 
 **When project agents exist:** Use a minimal spawn prompt — task + context + workflow contract only. Project agents carry their own expertise; don't restate it.
 
+**Audit recording (include in every agent prompt when audit is enabled):**
+
+Include these instructions in every agent's task prompt:
+```
+At task start:
+  bin/forge-audit record --type task_start --skill <skill-name> --detail '{"task":"<task-id>"}' 2>/dev/null || true
+
+At task end:
+  bin/forge-audit record --type task_completion --skill <skill-name> --detail '{"task":"<task-id>","tests_passed":<N>}' 2>/dev/null || true
+```
+
+The lead also records wave-level events between waves:
+```
+bin/forge-audit record --type wave_completion --detail '{"wave":<N>,"tasks_completed":[<ids>]}' 2>/dev/null || true
+```
+
+All audit calls are best-effort — `2>/dev/null || true` ensures they never block execution.
+
 ## Red Flags
 
 **Sequencing — never:**
