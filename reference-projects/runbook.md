@@ -113,6 +113,40 @@ git worktree remove .worktrees/ref-run-<date>
 git branch -d ref/run-<date>
 ```
 
+## Results Process
+
+During a reference project run, commits go to two places:
+
+**1. Deviations and Forge fixes → commit to main IMMEDIATELY**
+
+Don't wait until the run ends. Switch to main working tree, commit the fix, push, switch back.
+```bash
+cd /path/to/forge            # main working tree (not worktree)
+git add <files>
+git commit -m "fix: <deviation description>"
+git push
+```
+
+**2. Run results → commit in worktree, cherry-pick to main**
+```bash
+# In worktree: commit results file
+git add reference-projects/<project>/runs/<date>-v<version>.md
+git commit -m "docs: <project> run results v<version>"
+
+# From main working tree: cherry-pick the results commit
+cd /path/to/forge
+git cherry-pick <sha>
+git push
+```
+
+**3. Worktree → delete after results extracted**
+```bash
+git worktree remove .worktrees/<name>
+git branch -d <branch>
+```
+
+**Never leave results only in a worktree branch.** Cherry-pick to main before deleting.
+
 Generated code is gitignored and stays in the worktree until removal. Only the results file needs to be cherry-picked or committed to main.
 
 ## Running Multiple Projects
