@@ -1,5 +1,20 @@
 # Forge Release Notes
 
+## v0.4.3 (2026-03-16)
+
+### First Successful Reference Project Run
+
+Task Tracker API (inspired by Linear/Asana) built end-to-end with full Forge workflow.
+
+- **56 tests**, 13 validation checks, 23 audit events — all passing
+- **TDD** exercised: RED/GREEN on all 5 build tasks + 3 code review fixes
+- **Code review** found 5 critical + 7 suggestions; 3 must-fix issues resolved
+- **Full skill coverage:** verification-before-completion, requesting-code-review, receiving-code-review, finishing-a-development-branch, analyze-audit — all invoked for the first time on real code
+- **Explicit `--project-dir`** for all audit calls ensures events go to correct location
+- **3 attempts** to reach clean run — each exposed infrastructure gaps (audit capture, validation checklist, approval manifest) that were fixed in v0.4.1 and v0.4.2 before retrying
+
+---
+
 ## v0.4.2 (2026-03-16)
 
 ### Reference Project Infrastructure Fixes
