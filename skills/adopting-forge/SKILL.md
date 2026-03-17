@@ -95,26 +95,46 @@ Collect: stack, version manager, test command, lint command, build command, risk
 
 ## Step 2 — Propose Configuration
 
-Present findings as a structured proposal. Include confidence scores based on how many signals confirm each field:
+Present findings as a structured proposal using tables. Include confidence scores based on how many signals confirm each field.
 
-```
-Detected configuration for: <repo-name>
+**Project: `<repo-name>`**
 
-Stack:       node / typescript          [confidence: high — package.json + tsconfig.json]
-Test cmd:    npm test                   [confidence: high — package.json scripts.test]
-Lint cmd:    npm run lint               [confidence: medium — package.json scripts.lint]
-Build cmd:   npm run build              [confidence: high — package.json scripts.build]
+**Stack & Commands:**
 
-Risk areas detected:
-  src/auth/          → critical  (auth directory)
-  db/migrations/     → critical  (database migrations)
-  src/api/           → elevated  (public API)
-  docs/              → minimal
+| Setting | Detected Value | Confidence | Source |
+|---------|---------------|------------|--------|
+| Stack | node / typescript | 🟢 high | package.json + tsconfig.json |
+| Package manager | npm | 🟢 high | package-lock.json |
+| Test command | `npm test` | 🟢 high | package.json scripts.test |
+| Lint command | `npm run lint` | 🟡 medium | package.json scripts.lint |
+| Build command | `npm run build` | 🟢 high | package.json scripts.build |
+| CI | GitHub Actions | 🟢 high | .github/workflows/ |
 
-Existing AI surfaces:
-  CLAUDE.md          → will append Forge section (not overwrite)
-  No AGENTS.md       → will create for Codex compatibility
-```
+**Risk Areas:**
+
+| Path | Tier | Reason |
+|------|------|--------|
+| 🔴 src/auth/ | critical | Authentication — password handling, token management |
+| 🔴 db/migrations/ | critical | Database migrations — data integrity, rollback safety |
+| 🟠 src/api/ | elevated | Public API — input validation, error exposure |
+| 🟢 docs/ | minimal | Documentation only |
+
+**Risk Tier Legend:**
+
+| Icon | Tier | What It Means |
+|------|------|---------------|
+| 🔴 | critical | Security-sensitive or irreversible. Requires design doc, TDD, rollback plan, security review. |
+| 🟠 | elevated | Important, cross-cutting. Requires design doc, TDD, code review. |
+| 🟡 | standard | Normal development. Requires plan, tests, review. |
+| 🟢 | minimal | Low risk. Basic verification only. |
+
+**Existing AI Surfaces:**
+
+| File/Dir | Status | Action |
+|----------|--------|--------|
+| CLAUDE.md | exists | Append Forge section (not overwrite) |
+| AGENTS.md | missing | Create for Codex compatibility |
+| .claude/agents/ | 5 definitions | Preserve |
 
 Ask: "Does this look correct? Any fields to adjust before I continue?"
 
