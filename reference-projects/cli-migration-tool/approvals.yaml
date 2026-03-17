@@ -1,0 +1,29 @@
+# Pre-approved permissions for CLI Migration Tool reference project run
+# Per-agent scoped — each agent only gets what it needs
+
+project: cli-migration-tool
+forge_version_introduced: v0.4.4
+
+agents:
+  scaffolder:
+    file_operations:
+      create: ["package.json", "src/**", "bin/*", "tests/setup.js", "migrations/**"]
+    shell: ["npm install", "mkdir *", "chmod +x *"]
+
+  implementer:
+    file_operations:
+      create: ["src/**/*.js", "bin/*", "tests/**/*.test.js", "migrations/**/*.sql", "fixtures/**"]
+      edit: ["src/**/*.js", "bin/*", "tests/**/*.test.js", "package.json"]
+    shell: ["npm test", "node *", "sqlite3 *"]
+
+  code-reviewer:
+    file_operations:
+      read_only: true
+    shell: ["npm test"]
+
+common:
+  shell:
+    allowed: ["npm install", "npm test", "node *", "sqlite3 *", "chmod +x *", "git add *", "git commit *", "git status", "ls *", "cat *", "mkdir *"]
+    denied: ["rm -rf *", "sudo *", "git push *", "git reset --hard *"]
+  audit: "bin/forge-audit record --project-dir <path>"
+  git: { commit: true, push: false, branch: false }

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="$HOME/Projects/forge-ref-projects/dashboard-ui"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="${2:-$SCRIPT_DIR}"
 FORGE_VERSION="${1:-unknown}"
 RUN_DATE=$(date +%Y-%m-%d)
 

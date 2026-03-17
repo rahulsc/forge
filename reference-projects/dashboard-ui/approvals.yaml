@@ -1,0 +1,29 @@
+# Pre-approved permissions for Dashboard UI reference project run
+# Per-agent scoped — each agent only gets what it needs
+
+project: dashboard-ui
+forge_version_introduced: v0.4.4
+
+agents:
+  scaffolder:
+    file_operations:
+      create: ["package.json", "src/**", "public/**", "tests/setup.js"]
+    shell: ["npm install", "mkdir *"]
+
+  frontend-engineer:
+    file_operations:
+      create: ["src/**/*.{js,jsx,css}", "tests/**/*.test.js"]
+      edit: ["src/**/*.{js,jsx,css}", "tests/**/*.test.js", "package.json"]
+    shell: ["npm test", "npm start"]
+
+  code-reviewer:
+    file_operations:
+      read_only: true
+    shell: ["npm test"]
+
+common:
+  shell:
+    allowed: ["npm install", "npm test", "npm start", "git add *", "git commit *", "git status", "ls *", "cat *", "mkdir *"]
+    denied: ["rm -rf *", "sudo *", "git push *", "git reset --hard *"]
+  audit: "bin/forge-audit record --project-dir <path>"
+  git: { commit: true, push: false, branch: false }
