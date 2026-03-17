@@ -444,19 +444,25 @@ Before marking the plan complete, review all completed tasks together for cross-
 
 **Audit recording (include in every agent prompt when audit is enabled):**
 
+ALL audit calls MUST use explicit `--project-dir` to ensure events go to the correct location. The lead provides the canonical audit path in every agent prompt.
+
 Include these instructions in every agent's task prompt:
 ```
+AUDIT_DIR="<absolute path to project root>"
+
 At task start:
-  bin/forge-audit record --type task_start --skill <skill-name> --detail '{"task":"<task-id>"}' 2>/dev/null || true
+  <forge-bin>/forge-audit record --type task_start --skill <skill-name> --project-dir "$AUDIT_DIR" --detail '{"task":"<task-id>"}' 2>/dev/null || true
 
 At task end:
-  bin/forge-audit record --type task_completion --skill <skill-name> --detail '{"task":"<task-id>","tests_passed":<N>}' 2>/dev/null || true
+  <forge-bin>/forge-audit record --type task_completion --skill <skill-name> --project-dir "$AUDIT_DIR" --detail '{"task":"<task-id>","tests_passed":<N>}' 2>/dev/null || true
 ```
 
-The lead also records wave-level events between waves:
+The lead also records wave-level events with explicit `--project-dir`:
 ```
-bin/forge-audit record --type wave_completion --detail '{"wave":<N>,"tasks_completed":[<ids>]}' 2>/dev/null || true
+<forge-bin>/forge-audit record --type wave_completion --project-dir "$AUDIT_DIR" --detail '{"wave":<N>,"tasks_completed":[<ids>]}' 2>/dev/null || true
 ```
+
+`<forge-bin>` is the absolute path to the Forge bin/ directory. `$AUDIT_DIR` is the absolute path to the project being built — the lead sets both in the agent prompt.
 
 All audit calls are best-effort — `2>/dev/null || true` ensures they never block execution.
 
