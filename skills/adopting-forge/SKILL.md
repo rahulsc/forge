@@ -63,6 +63,36 @@ Scan the repo at file and directory level (no AST analysis):
 - `CLAUDE.md` (Claude Code), `.cursor/` (Cursor), `AGENTS.md` (Codex)
 - Existing `.forge/` → re-adoption path (see below)
 
+### Prior Orchestration Detection
+
+Scan for directories from other AI orchestration systems:
+
+| Directory | System | Action |
+|-----------|--------|--------|
+| `.superpowers/` | Superpowers | Report: "Found prior orchestration state. Offer migration or cleanup." |
+| `.aider/` | Aider | Report as existing AI configuration |
+| `.copilot-workspace/` | GitHub Copilot Workspace | Report as existing AI configuration |
+| `.continue/` | Continue.dev | Report as existing AI configuration |
+
+When found, present:
+> "Detected prior orchestration system(s): [list]. These won't conflict with Forge but may contain stale state.
+> Would you like to clean up any of these? (list each with y/n)"
+
+### Existing Design Documents
+
+Scan for existing design and planning artifacts:
+
+| Pattern | What It Is |
+|---------|-----------|
+| `docs/plans/` | Implementation plans |
+| `docs/*/design/` | Design documents |
+| `ARCHITECTURE.md`, `DESIGN.md`, `SPEC.md` | Common design docs |
+
+When found:
+> "Found N existing design documents. These will be accessible to Forge workflows."
+
+Register with forge-state if significant (10+ docs).
+
 ### Sensitive File Detection
 
 During repo scanning, detect and flag files matching these patterns:
@@ -135,6 +165,23 @@ Present findings as a structured proposal using tables. Include confidence score
 | CLAUDE.md | exists | Append Forge section (not overwrite) |
 | AGENTS.md | missing | Create for Codex compatibility |
 | .claude/agents/ | 5 definitions | Preserve |
+
+**Convention detection:**
+
+Check if `.forge/shared/conventions.md` has only template content (placeholder text). If so, attempt to detect and record project conventions:
+
+| Convention | Detection Method |
+|-----------|-----------------|
+| Test imports | Read 3+ existing test files → extract common import patterns |
+| CSS design tokens | Scan for `:root` or CSS custom property definitions in CSS/SCSS files |
+| Linter config | Detect `.eslintrc*`, `ruff.toml`, `.golangci.yml`, `biome.json` |
+| Commit format | Read last 10 `git log --oneline` messages → detect conventional commits, prefix patterns |
+| File naming | Scan `src/` → detect kebab-case vs camelCase vs PascalCase |
+
+Write detected conventions to `.forge/shared/conventions.md` replacing template placeholders. Present findings to user:
+> "Detected project conventions: [summary]. Written to .forge/shared/conventions.md."
+
+If conventions.md already has real content (not template), skip detection.
 
 Ask: "Does this look correct? Any fields to adjust before I continue?"
 
@@ -290,6 +337,13 @@ Create files in this order:
    ```
 
 5. **`.forge/local/.gitignore`** — `*` (gitignore all local state)
+
+### Root .gitignore Update
+
+Check the project's root `.gitignore`:
+1. Add `.forge/local/` if not present (Forge's gitignored state directory)
+2. Flag stale orchestration entries (e.g., `.superpowers/` if that system was cleaned up)
+3. Preview changes before modifying
 
 Run `forge-state init --project-dir .` to initialize state storage.
 

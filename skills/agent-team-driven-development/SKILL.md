@@ -182,6 +182,21 @@ Wave Cleanup Routine:
 7. Post between-waves status summary (see Status Reporting)
 ```
 
+### Agent Monitoring
+
+**Report timeout:**
+If an agent has been dispatched for >60 seconds with no response:
+1. Send nudge: `SendMessage` to the agent — "Status check — have you completed the task?"
+2. Wait 30 more seconds
+3. If still no response, alert user:
+   > "Agent `<name>` appears stuck (no response for 90s). Please check its pane and press Esc if it's cycling idle."
+
+**Shutdown timeout:**
+After sending structured `shutdown_request`, if no `shutdown_approved` within 30 seconds:
+1. Alert user:
+   > "Agent `<name>` hasn't confirmed shutdown after 30s. Check its pane or proceed — it will time out on its own."
+2. Proceed with next wave regardless. Do not block on stuck agents.
+
 **The key rule:** No wave starts with stale tasks from the previous wave. If TaskList shows any `in_progress` task after step 5, something is wrong — investigate before proceeding.
 
 ## Status Reporting

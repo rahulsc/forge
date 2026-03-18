@@ -113,6 +113,23 @@ If not set, ask:
 If yes: `forge-state set audit.enabled true`
 If no: do nothing.
 
+**Convention detection (during first brainstorming session):**
+
+Check if `.forge/shared/conventions.md` has only template content (placeholder text). If so, attempt to detect and record project conventions:
+
+| Convention | Detection Method |
+|-----------|-----------------|
+| Test imports | Read 3+ existing test files → extract common import patterns |
+| CSS design tokens | Scan for `:root` or CSS custom property definitions in CSS/SCSS files |
+| Linter config | Detect `.eslintrc*`, `ruff.toml`, `.golangci.yml`, `biome.json` |
+| Commit format | Read last 10 `git log --oneline` messages → detect conventional commits, prefix patterns |
+| File naming | Scan `src/` → detect kebab-case vs camelCase vs PascalCase |
+
+Write detected conventions to `.forge/shared/conventions.md` replacing template placeholders. Present findings to user:
+> "Detected project conventions: [summary]. Written to .forge/shared/conventions.md."
+
+If conventions.md already has real content (not template), skip detection.
+
 **Step 2 — Offer visual companion:**
 - When visual questions are ahead, offer the companion once for consent
 - This offer MUST be its own message — do not combine with any other content

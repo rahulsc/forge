@@ -85,3 +85,5 @@ Before considering a skill or agent complete:
 - [ ] Is it under 500 lines? If not, use progressive disclosure.
 - [ ] Does it follow `.forge/shared/conventions.md` naming rules?
 - [ ] Have I read an existing exemplar before writing? (Don't reinvent patterns)
+- [ ] Do all user-facing outputs use tables where data has 2+ columns?
+- [ ] Are icons used consistently? (✅ done, 🔴 critical, 🟠 elevated, 🟡 standard, 🟢 minimal)
