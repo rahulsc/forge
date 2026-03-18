@@ -1,5 +1,35 @@
 # Forge Release Notes
 
+## v0.5.0 (2026-03-17) — Beta Complete
+
+### Documentation, Adoption, and Deviation Closure
+
+The final Beta milestone. Forge is ready for v1.0 development.
+
+#### Usage Guide
+- Created `docs/usage-guide.md` — 475-line practical guide covering day-to-day workflows, agent management, risk tiers, audit analysis, state/configuration, extending Forge, troubleshooting
+- Added workflow decision tree and mono-repo support documentation
+
+#### Adoption Improvements
+- Prior orchestration detection (.superpowers/, .aider/, .copilot-workspace/, .continue/) with cleanup offer
+- Existing design document discovery (docs/plans/, docs/*/design/, ARCHITECTURE.md)
+- Root .gitignore migration (add .forge/local/, flag stale orchestration entries)
+- Convention auto-detection during adoption and brainstorming (test imports, CSS tokens, linter config, commit format, file naming)
+- Storage backend selection during adoption (SQLite recommended when available, JSON fallback)
+
+#### Agent and Execution Improvements
+- Agent idle loop mitigation: timed nudge (60s) + user escalation (90s) in agent-team-driven-development
+- Formatting audit: all skill outputs verified for table/icon consistency
+- forge-author quality checklist updated with table and icon rules
+
+#### Beta Audit Summary
+- 27 deviations total: 22 fixed, 1 mitigated, 1 deferred (v1.0), 3 closed
+- 3 reference project baselines: 106 total tests, all passing
+- 12 of 22 skills invoked, 8 of 10 agents dispatched
+- Key pattern: enforcement (HARD-GATEs) > instruction
+
+---
+
 ## v0.4.4 (2026-03-17)
 
 ### Dashboard UI + CLI Migration Tool Reference Projects

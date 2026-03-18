@@ -353,7 +353,7 @@ which sqlite3 > /dev/null 2>&1
 ```
 
 If available, ask the user:
-> "SQLite is available on this system. Which storage backend for Forge state?
+> "SQLite is available on this system. Which storage backend for Forge local/ephemeral state?
 > 1. **SQLite** (recommended — faster, supports concurrent access)
 > 2. **JSON** (no dependencies, simpler)
 >
