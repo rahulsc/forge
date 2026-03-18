@@ -345,7 +345,30 @@ Check the project's root `.gitignore`:
 2. Flag stale orchestration entries (e.g., `.superpowers/` if that system was cleaned up)
 3. Preview changes before modifying
 
-Run `forge-state init --project-dir .` to initialize state storage.
+### Storage Backend Selection
+
+Check if `sqlite3` is available on the system:
+```bash
+which sqlite3 > /dev/null 2>&1
+```
+
+If available, ask the user:
+> "SQLite is available on this system. Which storage backend for Forge state?
+> 1. **SQLite** (recommended — faster, supports concurrent access)
+> 2. **JSON** (no dependencies, simpler)
+>
+> Default: SQLite"
+
+Set the backend in `.forge/project.yaml`:
+```yaml
+storage:
+  backend: sqlite  # or json
+```
+
+Then initialize: `forge-state init --project-dir .`
+
+If sqlite3 is NOT available, use JSON silently and note it:
+> "Using JSON storage (sqlite3 not found). Install sqlite3 for better performance."
 
 
 ## Step 6 — Verify
