@@ -24,6 +24,8 @@ survives across sessions.
 2. **Adopt** -- open your project and say: *"Set up Forge in this project"*
 3. **Build** -- say what you want: *"Add a health check endpoint"* -- Forge handles the rest
 
+For day-to-day usage, agent management, audit analysis, and troubleshooting, see the **[Usage Guide](docs/usage-guide.md)**.
+
 ## The 8 Workflows
 
 Each workflow maps a developer intent to a pipeline of skills. You just say
@@ -303,7 +305,7 @@ These live at the top level of the Forge repository:
 
 | Directory | Purpose |
 |-----------|---------|
-| `bin/` | Runtime tools: `classify-risk`, `forge-evidence`, `forge-memory`, `forge-state`, `forge-pack` |
+| `bin/` | Runtime tools: `classify-risk`, `forge-evidence`, `forge-memory`, `forge-state`, `forge-pack`, `forge-audit` |
 | `policies/` | Risk classification rules (`default.yaml`) |
 | `skills/` | The 22 skills that define Forge workflows |
 | `agents/` | Specialist agent definitions for multi-agent teams |
