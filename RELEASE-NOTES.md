@@ -1,5 +1,18 @@
 # Forge Release Notes
 
+## v0.4.4 (2026-03-17)
+
+### Dashboard UI + CLI Migration Tool Reference Projects
+
+All 3 core suite reference projects now have baselines.
+
+- **Dashboard UI** — 17 tests, 3 critical CSS fixes, React components with dark mode
+- **CLI Migration Tool** — 33 tests, 6 critical fixes (transactions, SQL injection, path traversal, error handling). Code review correctly returned FAIL for critical-tier project.
+- **Adoption formatting** — Step 2 now uses tables with risk tier legend icons
+- Deviations #22-25 logged for v0.5.0 (adoption gaps from real project testing)
+
+---
+
 ## v0.4.3 (2026-03-16)
 
 ### First Successful Reference Project Run
